@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "5711885255",
+    "project_id": "reelssample",
+    "storage_bucket": "reelssample.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5711885255:android:de3c383ce06f1528f65fe2",
+        "android_client_info": {
+          "package_name": "com.orbitalsonic.reelssample"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYiForQCVm17J-WbZDEWqBoVZBZsr10yc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

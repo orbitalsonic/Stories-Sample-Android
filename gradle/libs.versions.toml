@@ -1,26 +1,73 @@
 [versions]
+# ------------ Plugins ------------
 agp = "8.13.0"
-kotlin = "2.0.21"
+kotlin = "2.2.10"
+googleGmsGoogleServices = "4.4.3"
+
+# ------------ Dependencies ------------
 coreKtx = "1.17.0"
-junit = "4.13.2"
-junitVersion = "1.3.0"
-espressoCore = "3.7.0"
 appcompat = "1.7.1"
 material = "1.13.0"
-activity = "1.10.1"
+activity = "1.11.0"
 constraintlayout = "2.2.1"
+
+# Fragment-Ktx
+fragmentKtx = "1.8.9"
+
+# Koin
+koinAndroid = "4.1.1"
+
+# Lifecycles
+lifecycle = "2.9.3"
+
+# Firebase Remote Config
+firebaseConfig = "23.0.0"
+
+# ExoPlayer
+media3Exoplayer = "1.8.0"
+
+# Glide
+glide = "5.0.4"
+
+# Lottie Animation
+lottie = "6.6.7"
+
+# Gson
+gson = "2.13.1"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
-[plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+# Fragment-Ktx
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 
+# Koin
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinAndroid" }
+
+# Lifecycles
+androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+
+# Firebase Remote Config
+firebase-config = { group = "com.google.firebase", name = "firebase-config", version.ref = "firebaseConfig" }
+
+# ExoPlayer
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Exoplayer" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Exoplayer" }
+
+# Glide
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+
+# Lottie Animation
+lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+
+# GSON
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
