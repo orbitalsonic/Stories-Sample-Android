@@ -8,6 +8,7 @@
     tools:context=".presentation.ui.activities.MainActivity">
 
     <TextView
+        android:id="@+id/mtvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
