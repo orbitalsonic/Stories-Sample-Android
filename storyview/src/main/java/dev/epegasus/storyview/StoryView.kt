@@ -1,7 +1,6 @@
 package dev.epegasus.storyview
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
@@ -10,8 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.drawable.toDrawable
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -40,7 +37,7 @@ import java.util.Calendar
  * linked-in -> https://www.linkedin.com/in/epegasus
  */
 
-class StoryView private constructor() : DialogFragment(), StoriesListener, StoryCallback, OnPullDismissListener, OnTouchCallback {
+class StoryView private constructor() : Fragment(), StoriesListener, StoryCallback, OnPullDismissListener, OnTouchCallback {
 
     private var _binding: DialogStoriesBinding? = null
     private val binding get() = _binding!!
@@ -76,7 +73,6 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
     private var downY = 0f
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        dialog?.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         _binding = DialogStoriesBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -124,7 +120,7 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
             binding.storiesProgressView.rotation = 180f
         }
 
-        binding.ifvCloseDialogStories.setOnClickListener { dismissAllowingStateLoss() }
+        binding.ifvCloseDialogStories.setOnClickListener { onDismissed() }
         binding.ifvImageDialogStories.setOnClickListener { onStoryClickListener?.onTitleIconClickListener(counter) }
 
         binding.viewPager.isUserInputEnabled = false
@@ -155,14 +151,6 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
         this.onStoryChangeListener = onStoryChangeListener
     }
 
-    override fun onResume() {
-        super.onResume()
-        val params = dialog?.window?.attributes
-        params?.width = ViewGroup.LayoutParams.MATCH_PARENT
-        params?.height = ViewGroup.LayoutParams.MATCH_PARENT
-        dialog?.window?.attributes = params
-    }
-
     /* -------------------------- Stories Listener -------------------------- */
 
     override fun onNext() {
@@ -177,7 +165,7 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
     }
 
     override fun onComplete() {
-        dismissAllowingStateLoss()
+        onDismissed()
     }
 
     /* -------------------------- StoryCallback -------------------------- */
@@ -211,7 +199,7 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
 
     override fun nextStory() {
         if (counter + 1 >= storyList.size) {
-            dismissAllowingStateLoss()
+            onDismissed()
             return
         }
         binding.viewPager.setCurrentItem(++counter, false)
@@ -295,7 +283,8 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
     /* -------------------------- Pull Dismiss Listener -------------------------- */
 
     override fun onDismissed() {
-        dismissAllowingStateLoss()
+        parentFragmentManager.popBackStack()
+        onStoryChangeListener?.storyDismiss()
     }
 
     override fun onShouldInterceptTouchEvent(): Boolean {
@@ -428,12 +417,17 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
             return this
         }
 
-        fun show() {
-            storyView?.show(fragmentManager, TAG)
+        fun show(containerId: Int) {
+            storyView?.let { fragment ->
+                fragmentManager.beginTransaction()
+                    .replace(containerId, fragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
         }
 
         fun dismiss() {
-            storyView?.dismiss()
+            fragmentManager.popBackStack()
         }
 
         val fragment: Fragment? get() = storyView

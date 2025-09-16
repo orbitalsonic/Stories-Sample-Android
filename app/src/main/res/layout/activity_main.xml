@@ -7,11 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".presentation.ui.activities.MainActivity">
 
-    <TextView
-        android:id="@+id/mtvTitle"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/mbOpen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Open Stories"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
