@@ -1,26 +1,25 @@
 package com.orbitalsonic.storiessample.presentation.ui.activities
 
 import com.orbitalsonic.storiessample.base.BaseActivity
+import com.orbitalsonic.storiessample.data.entities.ItemStory
 import com.orbitalsonic.storiessample.databinding.ActivityStoriesBinding
 import com.orbitalsonic.storiessample.presentation.adapters.PagerStories
+import com.orbitalsonic.storiessample.presentation.viewModels.ViewModelStories
 import com.orbitalsonic.storiessample.utilities.observers.SingleLiveEvent
 import com.orbitalsonic.storiessample.utilities.viewPager.ZoomOutPageTransformer
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBinding::inflate) {
 
+    private val viewModel by viewModel<ViewModelStories>()
+
     override fun onCreated() {
-        initViewPager()
         initObserver()
     }
 
-    private fun initViewPager() {
-        binding.viewPager.adapter = PagerStories(supportFragmentManager, lifecycle)
-        binding.viewPager.setPageTransformer(ZoomOutPageTransformer())
-        binding.viewPager.isUserInputEnabled = false
-        binding.viewPager.offscreenPageLimit = 1
-    }
-
     private fun initObserver() {
+        viewModel.listLiveData.observe(this) { initViewPager(it) }
+
         liveData.observe(this) {
             val currentItem = binding.viewPager.currentItem
 
@@ -35,6 +34,14 @@ class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBind
             }
         }
     }
+
+    private fun initViewPager(stories: List<ItemStory>) {
+        binding.viewPager.adapter = PagerStories(supportFragmentManager, lifecycle, stories)
+        binding.viewPager.setPageTransformer(ZoomOutPageTransformer())
+        binding.viewPager.isUserInputEnabled = false
+        binding.viewPager.offscreenPageLimit = 1
+    }
+
 
     companion object {
         val liveData = SingleLiveEvent<Int>()

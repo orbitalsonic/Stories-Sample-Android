@@ -4,13 +4,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.orbitalsonic.storiessample.data.entities.ItemStory
 import com.orbitalsonic.storiessample.presentation.ui.fragments.FragmentStory
 
-class PagerStories(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
+class PagerStories(fragmentManager: FragmentManager, lifecycle: Lifecycle, private val stories: List<ItemStory>) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun createFragment(position: Int): Fragment {
-        return FragmentStory()
+        return FragmentStory.newInstance(stories[position])
     }
 
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = stories.size
 }

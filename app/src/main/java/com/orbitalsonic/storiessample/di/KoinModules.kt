@@ -1,31 +1,28 @@
 package com.orbitalsonic.storiessample.di
 
+import com.orbitalsonic.storiessample.data.dataSources.local.DataSourceLocalStories
+import com.orbitalsonic.storiessample.data.repositories.RepositoryStoriesImpl
+import com.orbitalsonic.storiessample.domain.useCases.UseCaseStories
+import com.orbitalsonic.storiessample.presentation.viewModels.ViewModelStories
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 class KoinModules {
 
     private val dataSource = module {
-        /*single { DataSourceLocalReel(androidContext()) }
-        single { DataSourceRemoteReel() }
-        single { DataSourceDownloader(androidContext()) }*/
+        single { DataSourceLocalStories() }
     }
 
     private val repository = module {
-        /*single { RepositoryReelImpl(get(), get()) }
-        single { RepositoryDownloaderImpl(get()) }*/
+        single { RepositoryStoriesImpl(get()) }
     }
 
     private val useCase = module {
-        /*factory { UseCaseReelCategory(get()) }
-        factory { UseCaseReels(get()) }
-        factory { UseCaseVideoPlayer(get()) }
-        factory { UseCaseDownloader(get()) }*/
+        factory { UseCaseStories(get()) }
     }
 
     private val viewModel = module {
-        /*viewModel { ViewModelReelCategory(get()) }
-        viewModel { ViewModelReels(get(), get()) }
-        viewModel { ViewModelVideo(get(), get()) }*/
+        viewModel { ViewModelStories(get()) }
     }
 
     val moduleList = listOf(dataSource, repository, useCase, viewModel)
