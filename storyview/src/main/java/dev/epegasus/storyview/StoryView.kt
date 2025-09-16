@@ -304,6 +304,10 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
 
     /* -------------------------- Touch Callback -------------------------- */
 
+    override fun touchHorizontalSwipe(swipeDirection: Int) {
+        onStoryChangeListener?.storySwiped(swipeDirection)
+    }
+
     override fun touchPull() {
         pauseJob?.cancel()
         binding.storiesProgressView.pause()

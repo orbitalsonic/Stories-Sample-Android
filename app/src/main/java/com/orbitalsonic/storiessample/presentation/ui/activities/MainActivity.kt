@@ -1,8 +1,10 @@
 package com.orbitalsonic.storiessample.presentation.ui.activities
 
+import android.util.Log
 import android.widget.Toast
 import com.orbitalsonic.storiessample.base.BaseActivity
 import com.orbitalsonic.storiessample.databinding.ActivityMainBinding
+import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import dev.epegasus.storyview.StoryView
 import dev.epegasus.storyview.dataClasses.MyStory
 import dev.epegasus.storyview.listeners.OnStoryChangeListener
@@ -41,6 +43,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             })
             .setOnStoryChangeListener(object : OnStoryChangeListener {
                 override fun storyChanged(position: Int) {}
+                override fun storySwiped(swipeDirection: Int) {
+                    Log.d(TAG, "storySwiped: $swipeDirection")
+                }
             })
             .setStartingIndex(0)
             .setRtl(false)
