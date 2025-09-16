@@ -18,13 +18,8 @@ import java.lang.ref.WeakReference
 
 class PaletteExtraction(view: View, resource: Bitmap?) {
 
-    private val wrView: WeakReference<View>
-    private val wrBitmap: WeakReference<Bitmap?>
-
-    init {
-        wrView = WeakReference(view)
-        wrBitmap = WeakReference(resource)
-    }
+    private val wrView: WeakReference<View> = WeakReference(view)
+    private val wrBitmap: WeakReference<Bitmap?> = WeakReference(resource)
 
     fun execute() {
         CoroutineScope(Dispatchers.Default).launch {

@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import dev.epegasus.storyview.R
 import dev.epegasus.storyview.listeners.ProgressListener
 import dev.epegasus.storyview.listeners.StoriesListener
+import androidx.core.content.withStyledAttributes
 
 /**
  * Created by Sohaib Ahmed on 02/04/2023.
@@ -41,9 +42,9 @@ open class StoriesProgressView : LinearLayout {
 
     private fun init(context: Context, attrs: AttributeSet?) {
         orientation = HORIZONTAL
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.StoriesProgressView)
-        storiesCount = typedArray.getInt(R.styleable.StoriesProgressView_progressCount, 0)
-        typedArray.recycle()
+        context.withStyledAttributes(attrs, R.styleable.StoriesProgressView) {
+            storiesCount = getInt(R.styleable.StoriesProgressView_progressCount, 0)
+        }
         bindViews()
     }
 

@@ -2,7 +2,7 @@ package dev.epegasus.storyview.dataClasses
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import java.util.*
+import java.util.Date
 
 /**
  * Created by Sohaib Ahmed on 02/04/2023.
