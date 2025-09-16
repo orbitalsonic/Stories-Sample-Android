@@ -9,4 +9,5 @@ package dev.epegasus.storyview.listeners
 
 interface OnStoryChangeListener {
     fun storyChanged(position: Int)
+    fun storySwipe(position: Int)   // position = 0: Swipe Left, position = 1: Swipe Right
 }

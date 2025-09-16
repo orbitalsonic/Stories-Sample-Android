@@ -100,6 +100,8 @@ class PausableProgressBar(context: Context) : FrameLayout(context) {
 
     fun resumeProgress() = animation?.resume()
 
+    fun isPauseProgress(): Boolean = animation?.isPaused ?: false
+
     fun clear() {
         animation?.let {
             it.setAnimationListener(null)
@@ -113,7 +115,7 @@ class PausableProgressBar(context: Context) : FrameLayout(context) {
     ) : ScaleAnimation(fromX, toX, fromY, toY, pivotXType, pivotXValue, pivotYType, pivotYValue) {
 
         private var elapsedAtPause: Long = 0
-        private var isPaused = false
+        var isPaused = false
 
         override fun getTransformation(currentTime: Long, outTransformation: Transformation, scale: Float): Boolean {
             if (isPaused && elapsedAtPause == 0L) {

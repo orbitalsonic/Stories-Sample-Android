@@ -211,4 +211,11 @@ open class StoriesProgressView : LinearLayout {
         if (current < 0) return
         progressBarArrayList[current].resumeProgress()
     }
+
+    /**
+     * Is story Paused?
+     */
+    fun isPaused() : Boolean {
+        return progressBarArrayList[current].isPauseProgress()
+    }
 }

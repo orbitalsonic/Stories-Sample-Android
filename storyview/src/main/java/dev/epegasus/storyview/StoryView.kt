@@ -2,28 +2,37 @@ package dev.epegasus.storyview
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.bumptech.glide.Glide
 import dev.epegasus.storyview.adapters.CustomViewPagerAdapter
 import dev.epegasus.storyview.dataClasses.HeaderInfo
 import dev.epegasus.storyview.dataClasses.MyStory
 import dev.epegasus.storyview.databinding.DialogStoriesBinding
-import dev.epegasus.storyview.listeners.*
+import dev.epegasus.storyview.listeners.OnStoryChangeListener
+import dev.epegasus.storyview.listeners.OnStoryClickListener
+import dev.epegasus.storyview.listeners.OnTouchCallback
+import dev.epegasus.storyview.listeners.StoriesListener
+import dev.epegasus.storyview.listeners.StoryCallback
 import dev.epegasus.storyview.listeners.pull_dismiss_listener.OnPullDismissListener
 import dev.epegasus.storyview.utils.DateUtils.getDurationBetweenDates
 import dev.epegasus.storyview.utils.GeneralUtils.getActivity
-import java.util.*
-import androidx.core.graphics.drawable.toDrawable
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.Calendar
 
 /**
  * Created by Sohaib Ahmed on 02/04/2023.
@@ -45,6 +54,9 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
     private var onStoryClickListener: OnStoryClickListener? = null
     private var onStoryChangeListener: OnStoryChangeListener? = null
 
+    // Coroutine Jobs
+    private var pauseJob: Job? = null
+
     // Bundles
     private var _storyList = ArrayList<MyStory>()
     private val storyList: List<MyStory> get() = _storyList.toList()
@@ -53,17 +65,15 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
     private var isRtl = false
 
     private var isHeadlessLogoMode = false
+    private var didPause = false
 
     //Touch Events
-    private var timerThread: Thread? = null
-    private var isDownClick = false
-    private var elapsedTime: Long = 0
-    private var isPaused = false
     private var width = 0
     private var height = 0
     private var xValue = 0f
     private var yValue = 0f
-
+    private var downX = 0f
+    private var downY = 0f
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         dialog?.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
@@ -117,6 +127,7 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
         binding.ifvCloseDialogStories.setOnClickListener { dismissAllowingStateLoss() }
         binding.ifvImageDialogStories.setOnClickListener { onStoryClickListener?.onTitleIconClickListener(counter) }
 
+        binding.viewPager.isUserInputEnabled = false
         binding.viewPager.setOnTouchListener { _, _ -> true }
         binding.viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -178,7 +189,14 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
     }
 
     private fun previousStory() {
-        if (counter - 1 < 0) return
+        if (counter <= 0) {
+            // Already at first story
+            if (binding.storiesProgressView.isPaused()) {
+                binding.storiesProgressView.resume()
+            }
+            return
+        }
+
         binding.viewPager.setCurrentItem(--counter, false)
         binding.storiesProgressView.setStoriesCount(storyList.size)
         binding.storiesProgressView.setStoryDuration(duration)
@@ -202,7 +220,7 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
     }
 
     override fun onDestroy() {
-        timerThread = null
+        pauseJob?.cancel()
         _storyList.clear()
         binding.storiesProgressView.destroy()
         super.onDestroy()
@@ -269,44 +287,6 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
         binding.storiesProgressView.visibility = visibility
     }
 
-    private fun createTimer() {
-        timerThread = Thread(Runnable {
-            while (isDownClick) {
-                try {
-                    Thread.sleep(100)
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
-                }
-                elapsedTime += 100
-                if (elapsedTime >= 500 && !isPaused) {
-                    isPaused = true
-                    if (activity == null) return@Runnable
-                    activity?.runOnUiThread {
-                        binding.storiesProgressView.pause()
-                        setHeadingVisibility(View.GONE)
-                    }
-                }
-            }
-            isPaused = false
-            if (activity == null) return@Runnable
-            if (elapsedTime < 500) return@Runnable
-            activity?.runOnUiThread {
-                setHeadingVisibility(View.VISIBLE)
-                binding.storiesProgressView.resume()
-            }
-        })
-    }
-
-    private fun runTimer() {
-        isDownClick = true
-        createTimer()
-        timerThread?.start()
-    }
-
-    private fun stopTimer() {
-        isDownClick = false
-    }
-
     override fun onDismissed() {
         dismissAllowingStateLoss()
     }
@@ -316,47 +296,49 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
     }
 
     override fun touchPull() {
-        elapsedTime = 0
-        stopTimer()
+        pauseJob?.cancel()
         binding.storiesProgressView.pause()
     }
 
     override fun touchDown(xValue: Float, yValue: Float) {
         this.xValue = xValue
         this.yValue = yValue
-        if (!isDownClick) {
-            runTimer()
+        downX = xValue
+        downY = yValue
+        didPause = false
+
+        pauseJob?.cancel()
+        pauseJob = viewLifecycleOwner.lifecycleScope.launch {
+            delay(30) // <- threshold for "long press" in ms
+            binding.storiesProgressView.pause()
+            didPause = true
+            // optionally: setHeadingVisibility(View.GONE)
         }
     }
 
     override fun touchUp() {
-        val description = storyList[counter].description
-        if (isDownClick && elapsedTime < 500) {
-            stopTimer()
+        pauseJob?.cancel()
+
+        if (!didPause) {
+            // Quick tap → go prev/next
+            val description = storyList[counter].description
             if ((height - yValue).toInt() <= 0.8 * height) {
                 if (!TextUtils.isEmpty(description) && (height - yValue).toInt() >= 0.2 * height
                     || TextUtils.isEmpty(description)
                 ) {
-
-                    Log.d(TAG, "touchUp: X-Value: $xValue")
-                    Log.d(TAG, "touchUp: Width: $width")
                     if (xValue.toInt() <= width / 2) {
-                        //Left
                         if (isRtl) nextStory() else previousStory()
                     } else {
-                        //Right
                         if (isRtl) previousStory() else nextStory()
                     }
                 }
             }
         } else {
-            stopTimer()
-            setHeadingVisibility(View.VISIBLE)
+            // It was a long press → resume now
             binding.storiesProgressView.resume()
+            setHeadingVisibility(View.VISIBLE)
         }
-        elapsedTime = 0
     }
-
 
     class Builder(private val fragmentManager: FragmentManager) {
 
@@ -366,11 +348,6 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
         private var headingInfoList = ArrayList<HeaderInfo>()
         private var storyClickListeners: OnStoryClickListener? = null
         private var onStoryChangeListener: OnStoryChangeListener? = null
-
-        fun setStoriesList(storiesList: ArrayList<MyStory>): Builder {
-            bundle.putParcelableArrayList(IMAGES_KEY, storiesList)
-            return this
-        }
 
         fun setHeaderTitleText(title: String?): Builder {
             headerInfo.title = title
@@ -387,6 +364,11 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
             return this
         }
 
+        fun setHeadingInfoList(headingInfoList: ArrayList<HeaderInfo>): Builder {
+            this.headingInfoList = headingInfoList
+            return this
+        }
+
         fun setStoryDuration(duration: Long): Builder {
             bundle.putLong(DURATION_KEY, duration)
             return this
@@ -394,6 +376,26 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
 
         fun setStartingIndex(index: Int): Builder {
             bundle.putInt(STARTING_INDEX_TAG, index)
+            return this
+        }
+
+        fun setStoriesList(storiesList: ArrayList<MyStory>): Builder {
+            bundle.putParcelableArrayList(IMAGES_KEY, storiesList)
+            return this
+        }
+
+        fun setOnStoryChangeListener(onStoryChangeListener: OnStoryChangeListener?): Builder {
+            this.onStoryChangeListener = onStoryChangeListener
+            return this
+        }
+
+        fun setOnStoryClickListener(storyClickListener: OnStoryClickListener?): Builder {
+            this.storyClickListeners = storyClickListener
+            return this
+        }
+
+        fun setRtl(isRtl: Boolean): Builder {
+            bundle.putBoolean(IS_RTL_TAG, isRtl)
             return this
         }
 
@@ -413,32 +415,12 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
             return this
         }
 
-        fun setOnStoryChangeListener(onStoryChangeListener: OnStoryChangeListener?): Builder {
-            this.onStoryChangeListener = onStoryChangeListener
-            return this
-        }
-
-        fun setRtl(isRtl: Boolean): Builder {
-            bundle.putBoolean(IS_RTL_TAG, isRtl)
-            return this
-        }
-
-        fun setHeadingInfoList(headingInfoList: ArrayList<HeaderInfo>): Builder {
-            this.headingInfoList = headingInfoList
-            return this
-        }
-
-        fun setOnStoryClickListener(storyClickListener: OnStoryClickListener?): Builder {
-            this.storyClickListeners = storyClickListener
-            return this
-        }
-
         fun show() {
-            storyView!!.show(fragmentManager, TAG)
+            storyView?.show(fragmentManager, TAG)
         }
 
         fun dismiss() {
-            storyView!!.dismiss()
+            storyView?.dismiss()
         }
 
         val fragment: Fragment? get() = storyView
