@@ -129,6 +129,7 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
 
         binding.viewPager.isUserInputEnabled = false
         binding.viewPager.setOnTouchListener { _, _ -> true }
+
         binding.viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
@@ -162,6 +163,8 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
         dialog?.window?.attributes = params
     }
 
+    /* -------------------------- Stories Listener -------------------------- */
+
     override fun onNext() {
         binding.viewPager.setCurrentItem(++counter, false)
         updateHeading()
@@ -176,6 +179,8 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
     override fun onComplete() {
         dismissAllowingStateLoss()
     }
+
+    /* -------------------------- StoryCallback -------------------------- */
 
     override fun startStories() {
         counter = startingIndex
@@ -287,6 +292,8 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
         binding.storiesProgressView.visibility = visibility
     }
 
+    /* -------------------------- Pull Dismiss Listener -------------------------- */
+
     override fun onDismissed() {
         dismissAllowingStateLoss()
     }
@@ -294,6 +301,8 @@ class StoryView private constructor() : DialogFragment(), StoriesListener, Story
     override fun onShouldInterceptTouchEvent(): Boolean {
         return false
     }
+
+    /* -------------------------- Touch Callback -------------------------- */
 
     override fun touchPull() {
         pauseJob?.cancel()

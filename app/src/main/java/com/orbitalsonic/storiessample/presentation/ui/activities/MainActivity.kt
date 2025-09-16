@@ -1,6 +1,5 @@
 package com.orbitalsonic.storiessample.presentation.ui.activities
 
-import android.util.Log
 import android.widget.Toast
 import com.orbitalsonic.storiessample.base.BaseActivity
 import com.orbitalsonic.storiessample.databinding.ActivityMainBinding
@@ -42,9 +41,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             })
             .setOnStoryChangeListener(object : OnStoryChangeListener {
                 override fun storyChanged(position: Int) {}
-                override fun storySwipe(position: Int) {
-                    showToast("Story Swiped: $position")
-                }
             })
             .setStartingIndex(0)
             .setRtl(false)

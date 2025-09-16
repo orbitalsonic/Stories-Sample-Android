@@ -82,7 +82,6 @@ class PausableProgressBar(context: Context) : FrameLayout(context) {
         animation?.interpolator = LinearInterpolator()
         animation?.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(animation: Animation) {}
-
             override fun onAnimationStart(animation: Animation) {
                 binding.frontProgress.visibility = VISIBLE
                 progressListener?.onStartProgress()
@@ -111,7 +110,14 @@ class PausableProgressBar(context: Context) : FrameLayout(context) {
     }
 
     private class PausableScaleAnimation(
-        fromX: Float, toX: Float, fromY: Float, toY: Float, pivotXType: Int, pivotXValue: Float, pivotYType: Int, pivotYValue: Float
+        fromX: Float,
+        toX: Float,
+        fromY: Float,
+        toY: Float,
+        pivotXType: Int,
+        pivotXValue: Float,
+        pivotYType: Int,
+        pivotYValue: Float
     ) : ScaleAnimation(fromX, toX, fromY, toY, pivotXType, pivotXValue, pivotYType, pivotYValue) {
 
         private var elapsedAtPause: Long = 0
