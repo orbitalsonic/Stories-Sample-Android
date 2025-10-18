@@ -230,4 +230,18 @@ open class StoriesProgressView : LinearLayout {
             false
         }
     }
+    
+    /**
+     * Reset all progress bars to initial state
+     */
+    fun resetAllProgress() {
+        current = -1
+        isComplete = false
+        isSkipStart = false
+        isReverseStart = false
+        
+        for (progressBar in progressBarArrayList) {
+            progressBar.clear()
+        }
+    }
 }

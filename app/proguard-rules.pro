@@ -71,6 +71,11 @@
 # Keep StoryView classes
 -keep class dev.epegasus.storyview.** { *; }
 
+# Keep StoryView constructor specifically
+-keep class dev.epegasus.storyview.StoryView {
+    public <init>();
+}
+
 # Keep Firebase
 -keep class com.google.firebase.** { *; }
 -keep class com.google.android.gms.** { *; }

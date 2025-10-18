@@ -17,6 +17,7 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
 
     private var storyView: StoryView.Builder? = null
     private var currentPosition = 0
+    private var isStoriesShowing = false
 
     private val itemStory by lazy { arguments?.getParcelable(ARG_ITEM_STORY, ItemStory::class.java) }
 
@@ -24,17 +25,41 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
 
     override fun onResume() {
         super.onResume()
-        showStories()
+        // Only show stories if not already showing (prevents duplicate calls)
+        if (!isStoriesShowing) {
+            showStories()
+        }
     }
 
     override fun onPause() {
         super.onPause()
         storyView?.dismiss()
         storyView = null
+        isStoriesShowing = false
+    }
+    
+    /**
+     * Restart stories from the beginning when category changes
+     */
+    fun restartStories() {
+        Log.d(TAG, "Restarting stories for: ${itemStory?.headerText}")
+        currentPosition = 0 // Reset to first story
+        
+        // Always dismiss current stories and show fresh ones
+        storyView?.dismiss()
+        storyView = null
+        isStoriesShowing = false
+        showStories()
     }
 
     private fun showStories() {
         val storyData = itemStory ?: return
+        
+        // Prevent duplicate story showing
+        if (isStoriesShowing) {
+            Log.d(TAG, "Stories already showing, skipping duplicate call")
+            return
+        }
         
         // Validate story data
         if (storyData.storyList.isEmpty()) {
@@ -48,6 +73,8 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
             Log.w(TAG, "Invalid current position: $currentPosition, resetting to 0")
             currentPosition = 0
         }
+        
+        isStoriesShowing = true
 
         storyView = StoryView.Builder(childFragmentManager)
             .setHeaderTitleText(storyData.headerText)
@@ -73,6 +100,7 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
                 }
 
                 override fun storyDismiss() {
+                    isStoriesShowing = false
                     exitScreen()
                 }
             })

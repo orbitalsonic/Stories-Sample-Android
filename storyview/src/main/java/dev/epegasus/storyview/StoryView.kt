@@ -36,7 +36,7 @@ import java.util.Calendar
  * linked-in -> https://www.linkedin.com/in/epegasus
  */
 
-class StoryView private constructor() : Fragment(), StoriesListener, StoryCallback, OnPullDismissListener, OnTouchCallback {
+class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListener, OnTouchCallback {
 
     private var _binding: DialogStoriesBinding? = null
     private val binding get() = _binding!!
@@ -148,7 +148,8 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
         binding.storiesProgressView.setStoriesCount(storyList.size)
         binding.storiesProgressView.setStoryDuration(duration)
         updateHeading()
-        binding.viewPager.adapter = CustomViewPagerAdapter(storyList, this)
+        val adapter = CustomViewPagerAdapter(storyList, this)
+        binding.viewPager.adapter = adapter
     }
 
     /* -------------------------------------- Functions -------------------------------------- */
@@ -164,6 +165,7 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
     /* -------------------------- Stories Listener -------------------------- */
 
     override fun onNext() {
+        if (_binding == null) return
         if (counter + 1 < storyList.size) {
             binding.viewPager.setCurrentItem(++counter, false)
             updateHeading()
@@ -171,6 +173,7 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
     }
 
     override fun onPrev() {
+        if (_binding == null) return
         if (counter <= 0) return
         binding.viewPager.setCurrentItem(--counter, false)
         updateHeading()
@@ -183,18 +186,44 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
     /* -------------------------- StoryCallback -------------------------- */
 
     override fun startStories() {
+        // Check if binding is available (fragment view might be destroyed)
+        if (_binding == null) {
+            Log.w(TAG, "Cannot start stories: binding is null (fragment view destroyed)")
+            return
+        }
+        
         if (startingIndex < 0 || startingIndex >= storyList.size) {
             Log.w(TAG, "Invalid starting index: $startingIndex, using 0")
             startingIndex = 0
         }
         counter = startingIndex
+        binding.storiesProgressView.resetAllProgress() // Reset all progress bars first
         binding.storiesProgressView.startStories(startingIndex)
         binding.viewPager.setCurrentItem(startingIndex, false)
         updateHeading()
     }
 
     override fun pauseStories() {
+        if (_binding == null) return
         binding.storiesProgressView.pause()
+    }
+    
+    /**
+     * Restart stories from the beginning
+     */
+    fun restartStories() {
+        if (_binding == null) {
+            Log.w(TAG, "Cannot restart stories: binding is null (fragment view destroyed)")
+            return
+        }
+        
+        Log.d(TAG, "Restarting stories from beginning")
+        counter = 0
+        startingIndex = 0
+        binding.storiesProgressView.resetAllProgress()
+        binding.storiesProgressView.startStories(0)
+        binding.viewPager.setCurrentItem(0, false)
+        updateHeading()
     }
 
     private fun previousStory() {
@@ -228,15 +257,22 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
         onStoryClickListener!!.onDescriptionClickListener(position)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onDestroy() {
         pauseJob?.cancel()
         _storyList.clear()
-        binding.storiesProgressView.destroy()
+        _binding?.storiesProgressView?.destroy()
         super.onDestroy()
     }
 
     @Suppress("DEPRECATION")
     private fun updateHeading() {
+        if (_binding == null) return
+        
         val temp: ArrayList<HeaderInfo>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             arguments?.getParcelableArrayList(HEADER_INFO_KEY, HeaderInfo::class.java)
         else
@@ -442,7 +478,7 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
             val temp: ArrayList<HeaderInfo> = (headingInfoList.ifEmpty { arrayListOf(headerInfo) })
             bundle.putParcelableArrayList(HEADER_INFO_KEY, temp)
 
-            storyView = StoryView().also {
+            storyView = StoryView.newInstance().also {
                 it.arguments = bundle
                 it.setStoryClickListeners(storyClickListeners)
                 it.setOnStoryChangedCallback(onStoryChangeListener)
@@ -462,6 +498,10 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
         fun dismiss() {
             fragmentManager.popBackStack()
         }
+        
+        fun restartStories() {
+            storyView?.restartStories()
+        }
     }
 
     companion object {
@@ -471,5 +511,13 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
         private const val HEADER_INFO_KEY = "HEADER_INFO"
         private const val STARTING_INDEX_TAG = "STARTING_INDEX"
         private const val IS_RTL_TAG = "IS_RTL"
+        
+        /**
+         * Factory method to create a new instance of StoryView
+         * This ensures the fragment can be instantiated by the Android framework
+         */
+        fun newInstance(): StoryView {
+            return StoryView()
+        }
     }
 }

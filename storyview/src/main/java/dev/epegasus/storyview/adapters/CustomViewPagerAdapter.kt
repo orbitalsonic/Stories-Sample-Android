@@ -25,6 +25,13 @@ import dev.epegasus.storyview.utils.PaletteExtraction
 class CustomViewPagerAdapter(private val imageList: List<MyStory>, private val itemClick: StoryCallback) : RecyclerView.Adapter<CustomViewPagerAdapter.ViewHolder>() {
 
     private var storiesStarted = false
+    
+    /**
+     * Reset the stories started flag (useful when adapter is recreated)
+     */
+    fun resetStoriesStarted() {
+        storiesStarted = false
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemBinding = ItemStoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -58,7 +65,12 @@ class CustomViewPagerAdapter(private val imageList: List<MyStory>, private val i
                         }
                         if (!storiesStarted) {
                             storiesStarted = true
-                            itemClick.startStories()
+                            // Check if the view is still attached before starting stories
+                            if (itemBinding.root.isAttachedToWindow) {
+                                itemClick.startStories()
+                            } else {
+                                Log.w("CustomViewPagerAdapter", "View not attached, skipping startStories()")
+                            }
                         }
                         return false
                     }

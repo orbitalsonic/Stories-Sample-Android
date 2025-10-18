@@ -49,6 +49,22 @@ class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBind
         binding.viewPager.setPageTransformer(ZoomOutPageTransformer())
         binding.viewPager.isUserInputEnabled = false
         binding.viewPager.offscreenPageLimit = 1
+        
+        // Add page change listener to restart stories when category changes
+        binding.viewPager.registerOnPageChangeCallback(object : androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                // Notify the current fragment to restart its stories
+                restartCurrentStory()
+            }
+        })
+    }
+    
+    private fun restartCurrentStory() {
+        val currentFragment = supportFragmentManager.fragments.find { it.isVisible }
+        if (currentFragment is com.orbitalsonic.storiessample.presentation.ui.fragments.FragmentStory) {
+            currentFragment.restartStories()
+        }
     }
 
 

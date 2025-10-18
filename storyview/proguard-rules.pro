@@ -23,6 +23,11 @@
 # Keep StoryView classes
 -keep class dev.epegasus.storyview.** { *; }
 
+# Keep StoryView constructor specifically
+-keep class dev.epegasus.storyview.StoryView {
+    public <init>();
+}
+
 # Keep data classes
 -keep class dev.epegasus.storyview.dataClasses.** { *; }
 
