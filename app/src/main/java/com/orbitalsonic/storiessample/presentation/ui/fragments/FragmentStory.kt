@@ -1,30 +1,38 @@
 package com.orbitalsonic.storiessample.presentation.ui.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.orbitalsonic.storiessample.base.BaseFragment
-import com.orbitalsonic.storiessample.data.dataSources.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
 import com.orbitalsonic.storiessample.databinding.FragmentStoryBinding
+import com.orbitalsonic.storiessample.domain.useCases.UseCaseStorySeen
 import com.orbitalsonic.storiessample.presentation.ui.activities.ActivityStories
 import com.orbitalsonic.storiessample.utilities.utils.Constants
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import dev.epegasus.storyview.StoryView
 import dev.epegasus.storyview.listeners.OnStoryChangeListener
 import dev.epegasus.storyview.listeners.OnStoryClickListener
-import com.orbitalsonic.storiessample.domain.useCases.UseCaseStorySeen
 import kotlinx.coroutines.launch
-import androidx.lifecycle.lifecycleScope
 import org.koin.android.ext.android.inject
 
 class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::inflate) {
+
+    private val useCaseStorySeen: UseCaseStorySeen by inject()
 
     private var storyView: StoryView.Builder? = null
     private var currentPosition = 0
     private var isStoriesShowing = false
 
-    private val itemStory by lazy { arguments?.getParcelable(ARG_ITEM_STORY, ItemStory::class.java) }
-    private val useCaseStorySeen: UseCaseStorySeen by inject()
+    private val itemStory by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(ARG_ITEM_STORY, ItemStory::class.java)
+        } else {
+            arguments?.getParcelable(ARG_ITEM_STORY)
+        }
+    }
 
     override fun onViewCreated() {}
 
@@ -42,14 +50,14 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
         storyView = null
         isStoriesShowing = false
     }
-    
+
     /**
      * Restart stories from the beginning when category changes
      */
     fun restartStories() {
         Log.d(TAG, "Restarting stories for: ${itemStory?.headerText}")
         currentPosition = 0 // Reset to first story
-        
+
         // Always dismiss current stories and show fresh ones
         storyView?.dismiss()
         storyView = null
@@ -59,26 +67,26 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
 
     private fun showStories() {
         val storyData = itemStory ?: return
-        
+
         // Prevent duplicate story showing
         if (isStoriesShowing) {
             Log.d(TAG, "Stories already showing, skipping duplicate call")
             return
         }
-        
+
         // Validate story data
         if (storyData.storyList.isEmpty()) {
             Log.w(TAG, "Story list is empty for story: ${storyData.headerText}")
             exitScreen()
             return
         }
-        
+
         // Validate current position
         if (currentPosition < 0 || currentPosition >= storyData.storyList.size) {
             Log.w(TAG, "Invalid current position: $currentPosition, resetting to 0")
             currentPosition = 0
         }
-        
+
         isStoriesShowing = true
 
         storyView = StoryView.Builder(childFragmentManager)
@@ -103,7 +111,7 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
 
                 override fun storySwiped(swipeDirection: Int) {
                     Log.d(TAG, "storySwiped: $swipeDirection")
-                    ActivityStories.liveData.value = swipeDirection
+                    ActivityStories.storySwipedLiveData.value = swipeDirection
                 }
 
                 override fun storyDismiss() {
@@ -122,7 +130,7 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
         activity?.finish()
         activity?.overridePendingTransition(0, 0)
     }
-    
+
     private fun markStoryAsSeen(storyPosition: Int) {
         val storyData = itemStory ?: return
         if (storyPosition >= 0 && storyPosition < storyData.storyList.size) {

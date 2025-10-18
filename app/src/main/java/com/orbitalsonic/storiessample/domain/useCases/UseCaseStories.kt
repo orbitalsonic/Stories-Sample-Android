@@ -1,21 +1,14 @@
 package com.orbitalsonic.storiessample.domain.useCases
 
 import android.util.Log
-import com.orbitalsonic.storiessample.data.dataSources.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
 import com.orbitalsonic.storiessample.domain.repositories.RepositoryStories
 import com.orbitalsonic.storiessample.domain.repositories.RepositoryStorySeen
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-/**
- * Use case for managing stories business logic
- * Handles story fetching, sorting, and seen status management
- */
-class UseCaseStories(
-    private val repositoryStories: RepositoryStories,
-    private val repositoryStorySeen: RepositoryStorySeen
-) {
+class UseCaseStories(private val repositoryStories: RepositoryStories, private val repositoryStorySeen: RepositoryStorySeen) {
 
     // Cache for original stories order (for navigation)
     private var originalStories = listOf<ItemStory>()

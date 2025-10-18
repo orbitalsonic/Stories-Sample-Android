@@ -1,8 +1,8 @@
 package com.orbitalsonic.storiessample.data.repositories
 
 import android.util.Log
-import com.orbitalsonic.storiessample.data.dataSources.entities.ItemStory
 import com.orbitalsonic.storiessample.data.dataSources.local.DataSourceLocalStories
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
 import com.orbitalsonic.storiessample.data.dataSources.remote.DataSourceRemoteStories
 import com.orbitalsonic.storiessample.domain.repositories.RepositoryStories
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG

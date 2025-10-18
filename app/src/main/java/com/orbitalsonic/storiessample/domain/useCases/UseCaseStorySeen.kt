@@ -8,10 +8,6 @@ class UseCaseStorySeen(private val repository: RepositoryStorySeen) {
         return repository.isCategorySeen(categoryId)
     }
 
-    suspend fun markStoryAsSeen(storyId: Int, categoryId: Int) {
-        repository.markStoryAsSeen(storyId, categoryId)
-    }
-
     suspend fun isStorySeen(storyId: Int): Boolean {
         return repository.isStorySeen(storyId)
     }
@@ -19,7 +15,11 @@ class UseCaseStorySeen(private val repository: RepositoryStorySeen) {
     suspend fun resetAllSeenStories() {
         repository.resetAllSeenStories()
     }
-    
+
+    suspend fun markStoryAsSeen(storyId: Int, categoryId: Int) {
+        repository.markStoryAsSeen(storyId, categoryId)
+    }
+
     suspend fun cleanupOldEntries() {
         repository.cleanupOldEntries()
     }

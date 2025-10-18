@@ -5,22 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.orbitalsonic.storiessample.data.dataSources.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
 import com.orbitalsonic.storiessample.domain.useCases.UseCaseStories
 import com.orbitalsonic.storiessample.domain.useCases.UseCaseStorySeen
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel for MainActivity
- * Handles UI state and delegates business logic to UseCases
- */
-class ViewModelMain(
-    private val useCaseStories: UseCaseStories,
-    private val useCaseStorySeen: UseCaseStorySeen
-) : ViewModel() {
+class ViewModelMain(private val useCaseStories: UseCaseStories, private val useCaseStorySeen: UseCaseStorySeen) : ViewModel() {
 
-    // UI State
     private val _storiesLiveData = MutableLiveData<List<ItemStory>>()
     val storiesLiveData: LiveData<List<ItemStory>> = _storiesLiveData
 

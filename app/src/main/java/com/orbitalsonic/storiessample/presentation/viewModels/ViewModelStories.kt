@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.orbitalsonic.storiessample.data.dataSources.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
 import com.orbitalsonic.storiessample.domain.useCases.UseCaseStories
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import kotlinx.coroutines.launch
@@ -31,7 +31,7 @@ class ViewModelStories(private val useCase: UseCaseStories) : ViewModel() {
      */
     private fun fetchList() = viewModelScope.launch {
         _isLoading.value = true
-        
+
         useCase.getStoriesWithSeenStatus()
             .onSuccess { (stories, _) ->
                 _listLiveData.value = stories
@@ -40,7 +40,7 @@ class ViewModelStories(private val useCase: UseCaseStories) : ViewModel() {
             .onFailure { ex ->
                 Log.e(TAG, "ViewModelStories: fetchList: Failed to load stories", ex)
             }
-        
+
         _isLoading.value = false
     }
 
@@ -49,7 +49,7 @@ class ViewModelStories(private val useCase: UseCaseStories) : ViewModel() {
      */
     fun refreshStories() = viewModelScope.launch {
         _isLoading.value = true
-        
+
         useCase.refreshStories()
             .onSuccess { (stories, _) ->
                 _listLiveData.value = stories
@@ -58,7 +58,7 @@ class ViewModelStories(private val useCase: UseCaseStories) : ViewModel() {
             .onFailure { ex ->
                 Log.e(TAG, "ViewModelStories: refreshStories: Failed to refresh stories", ex)
             }
-        
+
         _isLoading.value = false
     }
 }

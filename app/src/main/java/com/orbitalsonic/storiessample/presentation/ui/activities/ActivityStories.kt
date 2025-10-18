@@ -1,7 +1,7 @@
 package com.orbitalsonic.storiessample.presentation.ui.activities
 
 import com.orbitalsonic.storiessample.base.BaseActivity
-import com.orbitalsonic.storiessample.data.dataSources.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
 import com.orbitalsonic.storiessample.databinding.ActivityStoriesBinding
 import com.orbitalsonic.storiessample.presentation.adapters.PagerStories
 import com.orbitalsonic.storiessample.presentation.viewModels.ViewModelStories
@@ -12,34 +12,15 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBinding::inflate) {
 
     private val viewModel by viewModel<ViewModelStories>()
-    private var startIndex = 0
+    private val startIndex by lazy { intent.getIntExtra(EXTRA_START_INDEX, 0) }
 
     override fun onCreated() {
-        // Get start index from intent
-        startIndex = intent.getIntExtra(EXTRA_START_INDEX, 0)
         initObserver()
     }
 
     private fun initObserver() {
         viewModel.listLiveData.observe(this) { initViewPager(it) }
-
-        liveData.observe(this) {
-            val currentItem = binding.viewPager.currentItem
-            val adapter = binding.viewPager.adapter
-            val totalItems = adapter?.itemCount ?: 0
-
-            if (totalItems == 0) return@observe
-
-            if (it == 0) {  // left to right
-                if (currentItem > 0) {
-                    binding.viewPager.currentItem = currentItem - 1
-                }
-            } else {
-                if (currentItem < totalItems - 1) {
-                    binding.viewPager.currentItem = currentItem + 1
-                }
-            }
-        }
+        storySwipedLiveData.observe(this) { onSwipeViewPager(it) }
     }
 
     private fun initViewPager(stories: List<ItemStory>) {
@@ -52,12 +33,12 @@ class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBind
         binding.viewPager.setPageTransformer(ZoomOutPageTransformer())
         binding.viewPager.isUserInputEnabled = false
         binding.viewPager.offscreenPageLimit = 1
-        
+
         // Set initial position
         if (startIndex < stories.size) {
             binding.viewPager.setCurrentItem(startIndex, false)
         }
-        
+
         // Add page change listener to restart stories when category changes
         binding.viewPager.registerOnPageChangeCallback(object : androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -67,7 +48,7 @@ class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBind
             }
         })
     }
-    
+
     private fun restartCurrentStory() {
         val currentFragment = supportFragmentManager.fragments.find { it.isVisible }
         if (currentFragment is com.orbitalsonic.storiessample.presentation.ui.fragments.FragmentStory) {
@@ -75,9 +56,26 @@ class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBind
         }
     }
 
+    private fun onSwipeViewPager(i: Int) {
+        val currentItem = binding.viewPager.currentItem
+        val adapter = binding.viewPager.adapter
+        val totalItems = adapter?.itemCount ?: 0
+
+        if (totalItems == 0) return
+
+        if (i == 0) {  // left to right
+            if (currentItem > 0) {
+                binding.viewPager.currentItem = currentItem - 1
+            }
+        } else {
+            if (currentItem < totalItems - 1) {
+                binding.viewPager.currentItem = currentItem + 1
+            }
+        }
+    }
 
     companion object {
-        val liveData = SingleLiveEvent<Int>()
+        val storySwipedLiveData = SingleLiveEvent<Int>()
         const val EXTRA_START_INDEX = "extra_start_index"
     }
 }
