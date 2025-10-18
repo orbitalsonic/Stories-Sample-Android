@@ -49,6 +49,9 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
     // Functions
     private var onStoryClickListener: OnStoryClickListener? = null
     private var onStoryChangeListener: OnStoryChangeListener? = null
+    
+    // Flag to track if download button is being touched
+    private var isDownloadButtonTouched = false
 
     // Coroutine Jobs
     private var pauseJob: Job? = null
@@ -148,7 +151,9 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
         binding.storiesProgressView.setStoriesCount(storyList.size)
         binding.storiesProgressView.setStoryDuration(duration)
         updateHeading()
-        val adapter = CustomViewPagerAdapter(storyList, this)
+        val adapter = CustomViewPagerAdapter(storyList, this) { position, imageUrl ->
+            onStoryClickListener?.onDownloadClickListener(position, imageUrl)
+        }
         binding.viewPager.adapter = adapter
     }
 
@@ -160,6 +165,14 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
 
     fun setOnStoryChangedCallback(onStoryChangeListener: OnStoryChangeListener?) {
         this.onStoryChangeListener = onStoryChangeListener
+    }
+    
+    /**
+     * Set flag to indicate download button is being touched
+     * This prevents story swipe from being triggered
+     */
+    override fun setDownloadButtonTouched(touched: Boolean) {
+        isDownloadButtonTouched = touched
     }
 
     /* -------------------------- Stories Listener -------------------------- */
@@ -353,6 +366,12 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
     /* -------------------------- Touch Callback -------------------------- */
 
     override fun touchHorizontalSwipe(swipeDirection: Int) {
+        // Don't trigger story swipe if download button was touched
+        if (isDownloadButtonTouched) {
+            Log.d(TAG, "StoryView: touchHorizontalSwipe: Ignoring swipe - download button was touched")
+            isDownloadButtonTouched = false // Reset flag
+            return
+        }
         onStoryChangeListener?.storySwiped(swipeDirection)
     }
 

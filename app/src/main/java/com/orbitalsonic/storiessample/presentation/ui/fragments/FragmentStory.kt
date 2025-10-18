@@ -10,6 +10,9 @@ import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
 import com.orbitalsonic.storiessample.databinding.FragmentStoryBinding
 import com.orbitalsonic.storiessample.domain.useCases.UseCaseStorySeen
 import com.orbitalsonic.storiessample.presentation.ui.activities.ActivityStories
+import com.orbitalsonic.storiessample.presentation.viewModels.DownloadState
+import com.orbitalsonic.storiessample.presentation.viewModels.ViewModelDownload
+import com.orbitalsonic.storiessample.utilities.extensions.showToast
 import com.orbitalsonic.storiessample.utilities.utils.Constants
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import dev.epegasus.storyview.StoryView
@@ -17,10 +20,12 @@ import dev.epegasus.storyview.listeners.OnStoryChangeListener
 import dev.epegasus.storyview.listeners.OnStoryClickListener
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::inflate) {
 
     private val useCaseStorySeen: UseCaseStorySeen by inject()
+    private val downloadViewModel: ViewModelDownload by viewModel()
 
     private var storyView: StoryView.Builder? = null
     private var currentPosition = 0
@@ -34,7 +39,9 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
         }
     }
 
-    override fun onViewCreated() {}
+    override fun onViewCreated() {
+        setupDownloadObservers()
+    }
 
     override fun onResume() {
         super.onResume()
@@ -99,6 +106,10 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
             .setOnStoryClickListener(object : OnStoryClickListener {
                 override fun onTitleIconClickListener(position: Int) {}
                 override fun onDescriptionClickListener(position: Int) {}
+                override fun onDownloadClickListener(position: Int, imageUrl: String) {
+                    Log.d(TAG, "FragmentStory: onDownloadClickListener: Position: $position, URL: $imageUrl")
+                    handleDownloadClick(imageUrl)
+                }
             })
             .setOnStoryChangeListener(object : OnStoryChangeListener {
                 override fun storyChanged(position: Int) {
@@ -140,6 +151,58 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
                 useCaseStorySeen.markStoryAsSeen(storyId, storyData.id)
             }
         }
+    }
+
+    private fun setupDownloadObservers() {
+        downloadViewModel.downloadState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is DownloadState.Loading -> {
+                    Log.d(TAG, "FragmentStory: Download started")
+                }
+
+                is DownloadState.Downloading -> {
+                    Log.d(TAG, "FragmentStory: Download in progress: ${state.downloadId}")
+                }
+
+                is DownloadState.Success -> {
+                    Log.d(TAG, "FragmentStory: Download completed: ${state.message}")
+                    // Show success message to user
+                    showDownloadMessage("Download completed successfully!")
+                }
+
+                is DownloadState.Error -> {
+                    Log.e(TAG, "FragmentStory: Download failed: ${state.message}")
+                    // Show error message to user
+                    showDownloadMessage("Download failed: ${state.message}")
+                }
+
+                is DownloadState.Cancelled -> {
+                    Log.d(TAG, "FragmentStory: Download cancelled")
+                    showDownloadMessage("Download cancelled")
+                }
+            }
+        }
+    }
+
+    /**
+     * Handle download button click
+     */
+    private fun handleDownloadClick(imageUrl: String) {
+        val storyData = itemStory ?: return
+        Log.d(TAG, "FragmentStory: handleDownloadClick: Downloading image from: $imageUrl")
+
+        // Start download
+        downloadViewModel.downloadStoryImage(imageUrl, storyData.headerText)
+    }
+
+    /**
+     * Show download message to user
+     */
+    private fun showDownloadMessage(message: String) {
+        context.showToast(message)
+        // You can implement a toast, snackbar, or any other UI feedback here
+        Log.d(TAG, "FragmentStory: showDownloadMessage: $message")
+        // For now, just log the message. You can add UI feedback later.
     }
 
     companion object {

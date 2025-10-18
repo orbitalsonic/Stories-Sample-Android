@@ -11,4 +11,5 @@ interface StoryCallback {
     fun pauseStories()
     fun nextStory()
     fun onDescriptionClickListener(position: Int)
+    fun setDownloadButtonTouched(touched: Boolean)
 }

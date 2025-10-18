@@ -1,11 +1,13 @@
 package dev.epegasus.storyview.adapters
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -22,10 +24,14 @@ import dev.epegasus.storyview.utils.PaletteExtraction
  * linked-in -> https://www.linkedin.com/in/epegasus
  */
 
-class CustomViewPagerAdapter(private val imageList: List<MyStory>, private val itemClick: StoryCallback) : RecyclerView.Adapter<CustomViewPagerAdapter.ViewHolder>() {
+class CustomViewPagerAdapter(
+    private val imageList: List<MyStory>,
+    private val itemClick: StoryCallback,
+    private val onDownloadClick: ((Int, String) -> Unit)? = null
+) : RecyclerView.Adapter<CustomViewPagerAdapter.ViewHolder>() {
 
     private var storiesStarted = false
-    
+
     /**
      * Reset the stories started flag (useful when adapter is recreated)
      */
@@ -38,6 +44,7 @@ class CustomViewPagerAdapter(private val imageList: List<MyStory>, private val i
         return ViewHolder(itemBinding)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.apply {
             val item = imageList[position]
@@ -46,7 +53,43 @@ class CustomViewPagerAdapter(private val imageList: List<MyStory>, private val i
             if (!item.description.isNullOrEmpty()) {
                 itemBinding.mtvDescription.visibility = View.VISIBLE
                 itemBinding.mtvDescription.text = item.description
-                itemBinding.mtvDescription.setOnClickListener { itemClick.onDescriptionClickListener(adapterPosition) }
+                itemBinding.mtvDescription.setOnClickListener { itemClick.onDescriptionClickListener(position) }
+            }
+
+            // Configuring Download Button
+            itemBinding.ifvDownload.setOnClickListener {
+                Log.d("CustomViewPagerAdapter", "Download button clicked at position: $position")
+                Toast.makeText(itemBinding.root.context, "Downloading!", Toast.LENGTH_SHORT).show()
+                onDownloadClick?.invoke(position, item.url ?: "")
+            }
+
+            // Prevent touch events from bubbling up to story view
+            itemBinding.ifvDownload.setOnTouchListener { view, event ->
+                when (event.action) {
+                    android.view.MotionEvent.ACTION_DOWN -> {
+                        Log.d("CustomViewPagerAdapter", "Download button touch DOWN")
+                        itemClick.setDownloadButtonTouched(true)
+                        true
+                    }
+
+                    android.view.MotionEvent.ACTION_UP -> {
+                        Log.d("CustomViewPagerAdapter", "Download button touch UP")
+                        view.performClick()
+                        // Reset the flag after a short delay
+                        view.postDelayed({
+                            itemClick.setDownloadButtonTouched(false)
+                        }, 100)
+                        true
+                    }
+
+                    android.view.MotionEvent.ACTION_CANCEL -> {
+                        Log.d("CustomViewPagerAdapter", "Download button touch CANCELLED")
+                        itemClick.setDownloadButtonTouched(false)
+                        true
+                    }
+
+                    else -> false
+                }
             }
 
             // Configuring Image
