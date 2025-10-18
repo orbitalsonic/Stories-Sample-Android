@@ -22,13 +22,17 @@ class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBind
 
         liveData.observe(this) {
             val currentItem = binding.viewPager.currentItem
+            val adapter = binding.viewPager.adapter
+            val totalItems = adapter?.itemCount ?: 0
+
+            if (totalItems == 0) return@observe
 
             if (it == 0) {  // left to right
                 if (currentItem > 0) {
                     binding.viewPager.currentItem = currentItem - 1
                 }
             } else {
-                if (currentItem < 2) {
+                if (currentItem < totalItems - 1) {
                     binding.viewPager.currentItem = currentItem + 1
                 }
             }
@@ -36,6 +40,11 @@ class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBind
     }
 
     private fun initViewPager(stories: List<ItemStory>) {
+        if (stories.isEmpty()) {
+            finish()
+            return
+        }
+
         binding.viewPager.adapter = PagerStories(supportFragmentManager, lifecycle, stories)
         binding.viewPager.setPageTransformer(ZoomOutPageTransformer())
         binding.viewPager.isUserInputEnabled = false
