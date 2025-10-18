@@ -96,7 +96,7 @@ open class StoriesProgressView : LinearLayout {
     fun skip() {
         if (isSkipStart || isReverseStart) return
         if (isComplete) return
-        if (current < 0) return
+        if (current < 0 || current >= progressBarArrayList.size) return
         val p: PausableProgressBar = progressBarArrayList[current]
         isSkipStart = true
         p.setMax()
@@ -108,7 +108,7 @@ open class StoriesProgressView : LinearLayout {
     fun reverse() {
         if (isSkipStart || isReverseStart) return
         if (isComplete) return
-        if (current < 0) return
+        if (current < 0 || current >= progressBarArrayList.size) return
         val p: PausableProgressBar = progressBarArrayList[current]
         isReverseStart = true
         p.setMin()
@@ -174,15 +174,23 @@ open class StoriesProgressView : LinearLayout {
      * Start progress animation
      */
     fun startStories() {
-        progressBarArrayList[0].startProgress()
+        if (progressBarArrayList.isNotEmpty()) {
+            progressBarArrayList[0].startProgress()
+        }
     }
 
     /**
      * Start progress animation from specific progress
      */
     fun startStories(from: Int) {
+        if (progressBarArrayList.isEmpty() || from < 0 || from >= progressBarArrayList.size) {
+            return
+        }
+        
         for (i in 0 until from) {
-            progressBarArrayList[i].setMaxWithoutCallback()
+            if (i < progressBarArrayList.size) {
+                progressBarArrayList[i].setMaxWithoutCallback()
+            }
         }
         progressBarArrayList[from].startProgress()
     }
@@ -200,7 +208,7 @@ open class StoriesProgressView : LinearLayout {
      * Pause story
      */
     fun pause() {
-        if (current < 0) return
+        if (current < 0 || current >= progressBarArrayList.size) return
         progressBarArrayList[current].pauseProgress()
     }
 
@@ -208,7 +216,7 @@ open class StoriesProgressView : LinearLayout {
      * Resume story
      */
     fun resume() {
-        if (current < 0) return
+        if (current < 0 || current >= progressBarArrayList.size) return
         progressBarArrayList[current].resumeProgress()
     }
 
@@ -216,6 +224,10 @@ open class StoriesProgressView : LinearLayout {
      * Is story Paused?
      */
     fun isPaused() : Boolean {
-        return progressBarArrayList[current].isPauseProgress()
+        return if (current >= 0 && current < progressBarArrayList.size) {
+            progressBarArrayList[current].isPauseProgress()
+        } else {
+            false
+        }
     }
 }

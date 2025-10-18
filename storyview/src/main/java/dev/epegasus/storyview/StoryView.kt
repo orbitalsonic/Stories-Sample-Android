@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -86,12 +85,17 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
         setupStories()
     }
 
-    @Suppress("DEPRECATION")
     private fun setDisplay() {
-        val displayMetrics = DisplayMetrics()
-        globalActivity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        width = displayMetrics.widthPixels
-        height = displayMetrics.heightPixels
+        val resources = context?.resources
+        if (resources != null) {
+            val displayMetrics = resources.displayMetrics
+            width = displayMetrics.widthPixels
+            height = displayMetrics.heightPixels
+        } else {
+            // Fallback to default values if context is null
+            width = 1080
+            height = 1920
+        }
     }
 
     @Suppress("DEPRECATION")
@@ -135,6 +139,12 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
     }
 
     private fun setupStories() {
+        if (storyList.isEmpty()) {
+            Log.w(TAG, "Story list is empty, dismissing story view")
+            onDismissed()
+            return
+        }
+
         binding.storiesProgressView.setStoriesCount(storyList.size)
         binding.storiesProgressView.setStoryDuration(duration)
         updateHeading()
@@ -154,8 +164,10 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
     /* -------------------------- Stories Listener -------------------------- */
 
     override fun onNext() {
-        binding.viewPager.setCurrentItem(++counter, false)
-        updateHeading()
+        if (counter + 1 < storyList.size) {
+            binding.viewPager.setCurrentItem(++counter, false)
+            updateHeading()
+        }
     }
 
     override fun onPrev() {
@@ -171,6 +183,10 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
     /* -------------------------- StoryCallback -------------------------- */
 
     override fun startStories() {
+        if (startingIndex < 0 || startingIndex >= storyList.size) {
+            Log.w(TAG, "Invalid starting index: $startingIndex, using 0")
+            startingIndex = 0
+        }
         counter = startingIndex
         binding.storiesProgressView.startStories(startingIndex)
         binding.viewPager.setCurrentItem(startingIndex, false)
@@ -229,9 +245,14 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
         var headerInfo: HeaderInfo? = null
 
         temp?.let { list ->
+            if (list.isEmpty()) {
+                Log.w(TAG, "Header info list is empty")
+                return
+            }
+
             if (list.size == 1) {
                 headerInfo = list[0]
-            } else if (counter < list.size) {
+            } else if (counter >= 0 && counter < list.size) {
                 headerInfo = list[counter]
             }
         }
@@ -260,9 +281,11 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
             binding.mtvSubtitleDialogStories.visibility = View.GONE
         }
 
-        storyList[counter].date?.let {
-            val text = "${binding.mtvTitleDialogStories.text} ${getDurationBetweenDates(it, Calendar.getInstance().time)}"
-            binding.mtvTitleDialogStories.text = text
+        if (counter >= 0 && counter < storyList.size) {
+            storyList[counter].date?.let {
+                val text = "${binding.mtvTitleDialogStories.text} ${getDurationBetweenDates(it, Calendar.getInstance().time)}"
+                binding.mtvTitleDialogStories.text = text
+            }
         }
     }
 
@@ -323,15 +346,17 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
 
         if (!didPause) {
             // Quick tap → go prev/next
-            val description = storyList[counter].description
-            if ((height - yValue).toInt() <= 0.8 * height) {
-                if (!TextUtils.isEmpty(description) && (height - yValue).toInt() >= 0.2 * height
-                    || TextUtils.isEmpty(description)
-                ) {
-                    if (xValue.toInt() <= width / 2) {
-                        if (isRtl) nextStory() else previousStory()
-                    } else {
-                        if (isRtl) previousStory() else nextStory()
+            if (counter >= 0 && counter < storyList.size) {
+                val description = storyList[counter].description
+                if ((height - yValue).toInt() <= 0.8 * height) {
+                    if (!TextUtils.isEmpty(description) && (height - yValue).toInt() >= 0.2 * height
+                        || TextUtils.isEmpty(description)
+                    ) {
+                        if (xValue.toInt() <= width / 2) {
+                            if (isRtl) nextStory() else previousStory()
+                        } else {
+                            if (isRtl) previousStory() else nextStory()
+                        }
                     }
                 }
             }
@@ -377,11 +402,19 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
         }
 
         fun setStartingIndex(index: Int): Builder {
-            bundle.putInt(STARTING_INDEX_TAG, index)
+            if (index < 0) {
+                Log.w(TAG, "Invalid starting index: $index, using 0")
+                bundle.putInt(STARTING_INDEX_TAG, 0)
+            } else {
+                bundle.putInt(STARTING_INDEX_TAG, index)
+            }
             return this
         }
 
         fun setStoriesList(storiesList: ArrayList<MyStory>): Builder {
+            if (storiesList.isEmpty()) {
+                Log.w(TAG, "Stories list is empty")
+            }
             bundle.putParcelableArrayList(IMAGES_KEY, storiesList)
             return this
         }
@@ -429,8 +462,6 @@ class StoryView private constructor() : Fragment(), StoriesListener, StoryCallba
         fun dismiss() {
             fragmentManager.popBackStack()
         }
-
-        val fragment: Fragment? get() = storyView
     }
 
     companion object {
