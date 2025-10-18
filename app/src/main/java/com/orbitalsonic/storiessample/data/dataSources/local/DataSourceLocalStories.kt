@@ -1,120 +1,80 @@
 package com.orbitalsonic.storiessample.data.dataSources.local
 
+import android.content.Context
+import android.util.Log
+import com.google.gson.Gson
 import com.orbitalsonic.storiessample.data.entities.ItemStory
+import com.orbitalsonic.storiessample.data.entities.StoriesResponse
+import com.orbitalsonic.storiessample.data.entities.StoryCategory
+import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import dev.epegasus.storyview.dataClasses.MyStory
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
+import java.io.InputStreamReader
 
-class DataSourceLocalStories {
+class DataSourceLocalStories(private val context: Context) {
+
+    @Volatile
+    private var storiesResponse: StoriesResponse
+
+    private val cacheFile = File(context.filesDir, "stories.json")
+
+    init {
+        // Try to load cached file if exists (persisted between app launches)
+        storiesResponse = if (cacheFile.exists()) {
+            try {
+                FileReader(cacheFile).use { reader ->
+                    Gson().fromJson(reader, StoriesResponse::class.java)
+                }
+            } catch (ex: Exception) {
+                Log.e(TAG, "Failed to load cache, falling back to assets", ex)
+                loadFromAssets()
+            }
+        } else {
+            loadFromAssets()
+        }
+    }
+
+    private fun loadFromAssets(): StoriesResponse {
+        return try {
+            context.assets.open("stories.json").use { inputStream ->
+                InputStreamReader(inputStream).use { reader ->
+                    val storyCategories = Gson().fromJson(reader, Array<StoryCategory>::class.java)
+                    val itemStories = storyCategories.mapIndexed { index, category ->
+                        ItemStory(
+                            id = index,
+                            headerText = category.category,
+                            subHeaderText = category.subHeader,
+                            headerUrl = category.imageUrl,
+                            storyList = category.stories.map { story ->
+                                MyStory(url = story.imageUrl)
+                            }
+                        )
+                    }
+                    StoriesResponse(itemStories)
+                }
+            }
+        } catch (ex: Exception) {
+            Log.e(TAG, "DataSourceLocalStories: Failed to load stories JSON from assets", ex)
+            StoriesResponse(emptyList())
+        }
+    }
+
+    /** Called by repository to update local cache with remote data */
+    fun updateStoriesResponse(newResponse: StoriesResponse) {
+        storiesResponse = newResponse
+        try {
+            FileWriter(cacheFile).use { writer ->
+                Gson().toJson(newResponse, writer)
+            }
+        } catch (ex: Exception) {
+            Log.e(TAG, "DataSourceLocalStories: Failed to save reels cache", ex)
+        }
+    }
 
     fun getStories(): List<ItemStory> {
-        return listOf(
-            ItemStory(
-                id = 0,
-                headerText = "Makkah",
-                subHeaderText = "Home of Allah",
-                headerUrl = "https://picsum.photos/id/1/300/200",
-                storyList = listOf(
-                    MyStory(url = "https://picsum.photos/id/1/300/200"),
-                    MyStory(url = "https://picsum.photos/id/2/300/200"),
-                    MyStory(url = "https://picsum.photos/id/3/300/200"),
-                    MyStory(url = "https://picsum.photos/id/4/300/200")
-                )
-            ),
-            ItemStory(
-                id = 1,
-                headerText = "Madina",
-                subHeaderText = "Home of our beloved Prophet (P.B.U.H)",
-                headerUrl = "https://picsum.photos/id/5/300/200",
-                storyList = listOf(
-                    MyStory(url = "https://picsum.photos/id/5/300/200"),
-                    MyStory(url = "https://picsum.photos/id/6/300/200"),
-                    MyStory(url = "https://picsum.photos/id/7/300/200"),
-                    MyStory(url = "https://picsum.photos/id/8/300/200")
-                )
-            ),
-            ItemStory(
-                id = 2,
-                headerText = "Masjid Al Aqsa",
-                subHeaderText = "Temporary Qibla",
-                headerUrl = "https://picsum.photos/id/9/300/200",
-                storyList = listOf(
-                    MyStory(url = "https://picsum.photos/id/9/300/200"),
-                    MyStory(url = "https://picsum.photos/id/10/300/200"),
-                    MyStory(url = "https://picsum.photos/id/11/300/200"),
-                    MyStory(url = "https://picsum.photos/id/12/300/200")
-                )
-            ),
-            ItemStory(
-                id = 3,
-                headerText = "Istanbul",
-                subHeaderText = "City of Two Continents",
-                headerUrl = "https://picsum.photos/id/13/300/200",
-                storyList = listOf(
-                    MyStory(url = "https://picsum.photos/id/13/300/200"),
-                    MyStory(url = "https://picsum.photos/id/14/300/200"),
-                    MyStory(url = "https://picsum.photos/id/15/300/200"),
-                    MyStory(url = "https://picsum.photos/id/16/300/200")
-                )
-            ),
-            ItemStory(
-                id = 4,
-                headerText = "Dubai",
-                subHeaderText = "City of Gold",
-                headerUrl = "https://picsum.photos/id/17/300/200",
-                storyList = listOf(
-                    MyStory(url = "https://picsum.photos/id/17/300/200"),
-                    MyStory(url = "https://picsum.photos/id/18/300/200"),
-                    MyStory(url = "https://picsum.photos/id/19/300/200"),
-                    MyStory(url = "https://picsum.photos/id/20/300/200")
-                )
-            ),
-            ItemStory(
-                id = 5,
-                headerText = "Cairo",
-                subHeaderText = "City of a Thousand Minarets",
-                headerUrl = "https://picsum.photos/id/21/300/200",
-                storyList = listOf(
-                    MyStory(url = "https://picsum.photos/id/21/300/200"),
-                    MyStory(url = "https://picsum.photos/id/22/300/200"),
-                    MyStory(url = "https://picsum.photos/id/23/300/200"),
-                    MyStory(url = "https://picsum.photos/id/24/300/200")
-                )
-            ),
-            ItemStory(
-                id = 6,
-                headerText = "Marrakech",
-                subHeaderText = "Red City of Morocco",
-                headerUrl = "https://picsum.photos/id/25/300/200",
-                storyList = listOf(
-                    MyStory(url = "https://picsum.photos/id/25/300/200"),
-                    MyStory(url = "https://picsum.photos/id/26/300/200"),
-                    MyStory(url = "https://picsum.photos/id/27/300/200"),
-                    MyStory(url = "https://picsum.photos/id/28/300/200")
-                )
-            ),
-            ItemStory(
-                id = 7,
-                headerText = "Kuala Lumpur",
-                subHeaderText = "Garden City of Lights",
-                headerUrl = "https://picsum.photos/id/29/300/200",
-                storyList = listOf(
-                    MyStory(url = "https://picsum.photos/id/29/300/200"),
-                    MyStory(url = "https://picsum.photos/id/30/300/200"),
-                    MyStory(url = "https://picsum.photos/id/31/300/200"),
-                    MyStory(url = "https://picsum.photos/id/32/300/200")
-                )
-            ),
-            ItemStory(
-                id = 8,
-                headerText = "Lahore",
-                subHeaderText = "Heart of Pakistan",
-                headerUrl = "https://picsum.photos/id/33/300/200",
-                storyList = listOf(
-                    MyStory(url = "https://picsum.photos/id/33/300/200"),
-                    MyStory(url = "https://picsum.photos/id/34/300/200"),
-                    MyStory(url = "https://picsum.photos/id/35/300/200"),
-                    MyStory(url = "https://picsum.photos/id/36/300/200")
-                )
-            )
-        )
+        Log.d(TAG, "DataSourceLocalStories: getCategoryList: called")
+        return storiesResponse.categories
     }
 }

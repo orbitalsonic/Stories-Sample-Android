@@ -1,52 +1,101 @@
 [
   {
-    "category": "Quran",
-    "imageUrl": "https://drive.google.com/uc?id=1J0dd6QE4K4KoYE9mZlpJss6Qzkgb_Gsr",
-    "stories": [
-      { "imageUrl": "https://i.pinimg.com/736x/0f/7c/79/0f7c79249a638e9de8080fb30c18032b.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/34/f1/18/34f11813eb824ac82be239878051758a.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/00/37/6c/00376c3150759fa107045628dd9d15ad.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/8e/ca/ee/8ecaee2b8302f664c0faf1c1cf9f2b86.jpg" }
-    ]
-  },
-  {
-    "category": "Calligraphy",
-    "imageUrl": "https://drive.google.com/uc?id=1FLFSh4G1Bo2a15M6iMbTvpvgDu0ClbCE",
-    "stories": [
-      { "imageUrl": "https://i.pinimg.com/1200x/0d/a2/45/0da24501fa522fcceae2e5d5d7d043ab.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/20/a7/0e/20a70ef5c39030d6ec0c22de8ed07401.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/f2/3f/25/f23f2508bb2c003f8277a981a2d52b9e.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/49/7d/35/497d3553679ec04940d69fe2ba4110f3.jpg" }
-    ]
-  },
-  {
     "category": "Makkah",
-    "imageUrl": "https://drive.google.com/uc?id=1UHwa7Lj1oSHXSG7vvseDU15S8kr7tZgj",
+    "subHeader": "Home of Allah",
+    "imageUrl": "https://picsum.photos/id/1/300/200",
     "stories": [
-      { "imageUrl": "https://i.pinimg.com/736x/93/40/2f/93402fa67492ca30d5072d512ceaab98.jpg" },
-      { "imageUrl": "https://i.pinimg.com/1200x/d8/a2/48/d8a2489f3ea68f8168dd4bc04ede5bcb.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/f2/8b/1e/f28b1e0b016b468b0bcfbf47316e9ae0.jpg" },
-      { "imageUrl": "https://i.pinimg.com/1200x/27/27/09/27270968d8a8dfdd8846565045d8a8cc.jpg" }
+      { "imageUrl": "https://picsum.photos/id/1/300/200" },
+      { "imageUrl": "https://picsum.photos/id/2/300/200" },
+      { "imageUrl": "https://picsum.photos/id/3/300/200" },
+      { "imageUrl": "https://picsum.photos/id/4/300/200" }
     ]
   },
   {
     "category": "Madina",
-    "imageUrl": "https://drive.google.com/uc?id=1bOhiOgP7bOaqjjv-r3XRnTxpsA9ldkHg",
+    "subHeader": "Home of our beloved Prophet (P.B.U.H)",
+    "imageUrl": "https://picsum.photos/id/5/300/200",
     "stories": [
-      { "imageUrl": "https://i.pinimg.com/736x/76/aa/32/76aa32898886f4338018337d255def73.jpg" },
-      { "imageUrl": "https://i.pinimg.com/1200x/b0/f4/f3/b0f4f3d1b91ba4914cd8b5165ba29718.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/67/bc/45/67bc459b62d5e72eb70e133fbc424a25.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/a7/f5/dd/a7f5dd4e009179ccf250a4c8b1dbecee.jpg" }
+      { "imageUrl": "https://picsum.photos/id/5/300/200" },
+      { "imageUrl": "https://picsum.photos/id/6/300/200" },
+      { "imageUrl": "https://picsum.photos/id/7/300/200" },
+      { "imageUrl": "https://picsum.photos/id/8/300/200" }
     ]
   },
   {
-    "category": "Mosque",
-    "imageUrl": "https://drive.google.com/uc?id=10cuq0mTR6lNUwufxO7WA5oEXe07lXYYq",
+    "category": "Masjid Al Aqsa",
+    "subHeader": "Temporary Qibla",
+    "imageUrl": "https://picsum.photos/id/9/300/200",
     "stories": [
-      { "imageUrl": "https://i.pinimg.com/736x/41/27/35/412735c2051ed54de34c53898a2b66fb.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/17/b7/92/17b792b6ec22724f1f5640d7a96f5f1d.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/e4/a0/bf/e4a0bf957c664a5f59e36b584f4c58b3.jpg" },
-      { "imageUrl": "https://i.pinimg.com/736x/6b/0b/9c/6b0b9c33be947d04b63d0b5347f0b799.jpg" }
+      { "imageUrl": "https://picsum.photos/id/9/300/200" },
+      { "imageUrl": "https://picsum.photos/id/10/300/200" },
+      { "imageUrl": "https://picsum.photos/id/11/300/200" },
+      { "imageUrl": "https://picsum.photos/id/12/300/200" }
+    ]
+  },
+  {
+    "category": "Istanbul",
+    "subHeader": "City of Two Continents",
+    "imageUrl": "https://picsum.photos/id/13/300/200",
+    "stories": [
+      { "imageUrl": "https://picsum.photos/id/13/300/200" },
+      { "imageUrl": "https://picsum.photos/id/14/300/200" },
+      { "imageUrl": "https://picsum.photos/id/15/300/200" },
+      { "imageUrl": "https://picsum.photos/id/16/300/200" }
+    ]
+  },
+  {
+    "category": "Dubai",
+    "subHeader": "City of Gold",
+    "imageUrl": "https://picsum.photos/id/17/300/200",
+    "stories": [
+      { "imageUrl": "https://picsum.photos/id/17/300/200" },
+      { "imageUrl": "https://picsum.photos/id/18/300/200" },
+      { "imageUrl": "https://picsum.photos/id/19/300/200" },
+      { "imageUrl": "https://picsum.photos/id/20/300/200" }
+    ]
+  },
+  {
+    "category": "Cairo",
+    "subHeader": "City of a Thousand Minarets",
+    "imageUrl": "https://picsum.photos/id/21/300/200",
+    "stories": [
+      { "imageUrl": "https://picsum.photos/id/21/300/200" },
+      { "imageUrl": "https://picsum.photos/id/22/300/200" },
+      { "imageUrl": "https://picsum.photos/id/23/300/200" },
+      { "imageUrl": "https://picsum.photos/id/24/300/200" }
+    ]
+  },
+  {
+    "category": "Marrakech",
+    "subHeader": "Red City of Morocco",
+    "imageUrl": "https://picsum.photos/id/25/300/200",
+    "stories": [
+      { "imageUrl": "https://picsum.photos/id/25/300/200" },
+      { "imageUrl": "https://picsum.photos/id/26/300/200" },
+      { "imageUrl": "https://picsum.photos/id/27/300/200" },
+      { "imageUrl": "https://picsum.photos/id/28/300/200" }
+    ]
+  },
+  {
+    "category": "Kuala Lumpur",
+    "subHeader": "Garden City of Lights",
+    "imageUrl": "https://picsum.photos/id/29/300/200",
+    "stories": [
+      { "imageUrl": "https://picsum.photos/id/29/300/200" },
+      { "imageUrl": "https://picsum.photos/id/30/300/200" },
+      { "imageUrl": "https://picsum.photos/id/31/300/200" },
+      { "imageUrl": "https://picsum.photos/id/32/300/200" }
+    ]
+  },
+  {
+    "category": "Lahore",
+    "subHeader": "Heart of Pakistan",
+    "imageUrl": "https://picsum.photos/id/33/300/200",
+    "stories": [
+      { "imageUrl": "https://picsum.photos/id/33/300/200" },
+      { "imageUrl": "https://picsum.photos/id/34/300/200" },
+      { "imageUrl": "https://picsum.photos/id/35/300/200" },
+      { "imageUrl": "https://picsum.photos/id/36/300/200" }
     ]
   }
 ]

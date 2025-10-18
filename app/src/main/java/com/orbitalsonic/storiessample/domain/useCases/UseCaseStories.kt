@@ -6,5 +6,10 @@ import com.orbitalsonic.storiessample.data.repositories.RepositoryStoriesImpl
 class UseCaseStories(private val repository: RepositoryStoriesImpl) {
 
     suspend fun getStories(): List<ItemStory> = repository.getStories()
+    
+    suspend fun refreshStories(): List<ItemStory> {
+        repository.fetchRemote()
+        return repository.getStories()
+    }
 
 }

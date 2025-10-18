@@ -12,12 +12,23 @@ class ViewModelStories(private val useCase: UseCaseStories) : ViewModel() {
 
     private val _listLiveData = MutableLiveData<List<ItemStory>>()
     val listLiveData: LiveData<List<ItemStory>> = _listLiveData
+    
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
 
     init {
         fetchList()
     }
 
     private fun fetchList() = viewModelScope.launch {
+        _isLoading.value = true
         _listLiveData.value = useCase.getStories()
+        _isLoading.value = false
+    }
+    
+    fun refreshStories() = viewModelScope.launch {
+        _isLoading.value = true
+        _listLiveData.value = useCase.refreshStories()
+        _isLoading.value = false
     }
 }
