@@ -52,6 +52,10 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
     
     // Flag to track if download button is being touched
     private var isDownloadButtonTouched = false
+    
+    // Touch coordinates to check if touch is in download button area
+    private var downloadButtonTouchX = 0f
+    private var downloadButtonTouchY = 0f
 
     // Coroutine Jobs
     private var pauseJob: Job? = null
@@ -173,6 +177,26 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
      */
     override fun setDownloadButtonTouched(touched: Boolean) {
         isDownloadButtonTouched = touched
+    }
+    
+    /**
+     * Check if touch coordinates are in the download button area
+     * Download button is positioned in bottom-right corner
+     */
+    private fun isTouchInDownloadButtonArea(x: Float, y: Float): Boolean {
+        if (_binding == null) return false
+        
+        // Download button is in bottom-right corner
+        // Approximate area: right 20% of width, bottom 20% of height
+        val rightMargin = width * 0.2f
+        val bottomMargin = height * 0.2f
+        
+        val isInRightArea = x >= (width - rightMargin)
+        val isInBottomArea = y >= (height - bottomMargin)
+        
+        Log.d(TAG, "StoryView: isTouchInDownloadButtonArea: x=$x, y=$y, width=$width, height=$height, rightMargin=$rightMargin, bottomMargin=$bottomMargin, isInRightArea=$isInRightArea, isInBottomArea=$isInBottomArea")
+        
+        return isInRightArea && isInBottomArea
     }
 
     /* -------------------------- Stories Listener -------------------------- */
@@ -387,6 +411,14 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
         downY = yValue
         didPause = false
 
+        // Check if touch is in download button area (bottom-right corner)
+        val isInDownloadArea = isTouchInDownloadButtonArea(xValue, yValue)
+        if (isInDownloadArea) {
+            Log.d(TAG, "StoryView: touchDown: Touch in download button area - ignoring")
+            isDownloadButtonTouched = true
+            return
+        }
+
         pauseJob?.cancel()
         pauseJob = viewLifecycleOwner.lifecycleScope.launch {
             delay(30) // <- threshold for "long press" in ms
@@ -398,6 +430,13 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
 
     override fun touchUp() {
         pauseJob?.cancel()
+
+        // Check if touch was in download button area
+        if (isDownloadButtonTouched) {
+            Log.d(TAG, "StoryView: touchUp: Touch was in download button area - ignoring story navigation")
+            isDownloadButtonTouched = false
+            return
+        }
 
         if (!didPause) {
             // Quick tap → go prev/next
