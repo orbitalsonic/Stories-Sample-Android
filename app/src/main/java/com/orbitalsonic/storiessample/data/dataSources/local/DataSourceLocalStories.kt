@@ -32,7 +32,7 @@ class DataSourceLocalStories {
                 )
             ),
             ItemStory(
-                id = 1,
+                id = 2,
                 headerText = "Masjid Al Aqsa",
                 subHeaderText = "Temporary Qibla",
                 headerUrl = "https://images.pexels.com/photos/36029/aroni-arsa-children-little.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500",
