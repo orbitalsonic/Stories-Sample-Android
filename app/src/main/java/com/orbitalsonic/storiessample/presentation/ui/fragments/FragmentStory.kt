@@ -7,6 +7,7 @@ import com.orbitalsonic.storiessample.base.BaseFragment
 import com.orbitalsonic.storiessample.data.entities.ItemStory
 import com.orbitalsonic.storiessample.databinding.FragmentStoryBinding
 import com.orbitalsonic.storiessample.presentation.ui.activities.ActivityStories
+import com.orbitalsonic.storiessample.utilities.utils.Constants
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import dev.epegasus.storyview.StoryView
 import dev.epegasus.storyview.listeners.OnStoryChangeListener
@@ -34,13 +35,26 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
 
     private fun showStories() {
         val storyData = itemStory ?: return
+        
+        // Validate story data
+        if (storyData.storyList.isEmpty()) {
+            Log.w(TAG, "Story list is empty for story: ${storyData.headerText}")
+            exitScreen()
+            return
+        }
+        
+        // Validate current position
+        if (currentPosition < 0 || currentPosition >= storyData.storyList.size) {
+            Log.w(TAG, "Invalid current position: $currentPosition, resetting to 0")
+            currentPosition = 0
+        }
 
         storyView = StoryView.Builder(childFragmentManager)
             .setHeaderTitleText(storyData.headerText)
             .setHeaderSubtitleText(storyData.subHeaderText)
             .setHeaderTitleLogoUrl(storyData.headerUrl)
             .setStartingIndex(currentPosition)
-            .setStoryDuration(5000)
+            .setStoryDuration(Constants.DEFAULT_STORY_DURATION)
             .setStoriesList(ArrayList(storyData.storyList))
             .setOnStoryClickListener(object : OnStoryClickListener {
                 override fun onTitleIconClickListener(position: Int) {}
@@ -48,7 +62,9 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
             })
             .setOnStoryChangeListener(object : OnStoryChangeListener {
                 override fun storyChanged(position: Int) {
-                    this@FragmentStory.currentPosition = position
+                    if (position >= 0 && position < storyData.storyList.size) {
+                        this@FragmentStory.currentPosition = position
+                    }
                 }
 
                 override fun storySwiped(swipeDirection: Int) {
