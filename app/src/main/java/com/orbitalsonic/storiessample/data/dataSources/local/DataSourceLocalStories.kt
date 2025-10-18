@@ -3,7 +3,7 @@ package com.orbitalsonic.storiessample.data.dataSources.local
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
-import com.orbitalsonic.storiessample.data.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.entities.ItemStory
 import com.orbitalsonic.storiessample.data.entities.StoriesResponse
 import com.orbitalsonic.storiessample.data.entities.StoryCategory
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG

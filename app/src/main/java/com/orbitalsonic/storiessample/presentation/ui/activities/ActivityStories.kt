@@ -1,7 +1,7 @@
 package com.orbitalsonic.storiessample.presentation.ui.activities
 
 import com.orbitalsonic.storiessample.base.BaseActivity
-import com.orbitalsonic.storiessample.data.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.entities.ItemStory
 import com.orbitalsonic.storiessample.databinding.ActivityStoriesBinding
 import com.orbitalsonic.storiessample.presentation.adapters.PagerStories
 import com.orbitalsonic.storiessample.presentation.viewModels.ViewModelStories
@@ -12,8 +12,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBinding::inflate) {
 
     private val viewModel by viewModel<ViewModelStories>()
+    private var startIndex = 0
 
     override fun onCreated() {
+        // Get start index from intent
+        startIndex = intent.getIntExtra(EXTRA_START_INDEX, 0)
         initObserver()
     }
 
@@ -50,6 +53,11 @@ class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBind
         binding.viewPager.isUserInputEnabled = false
         binding.viewPager.offscreenPageLimit = 1
         
+        // Set initial position
+        if (startIndex < stories.size) {
+            binding.viewPager.setCurrentItem(startIndex, false)
+        }
+        
         // Add page change listener to restart stories when category changes
         binding.viewPager.registerOnPageChangeCallback(object : androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -70,5 +78,6 @@ class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBind
 
     companion object {
         val liveData = SingleLiveEvent<Int>()
+        const val EXTRA_START_INDEX = "extra_start_index"
     }
 }

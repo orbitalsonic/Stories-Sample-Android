@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Stories Sample</string>
     <string name="msv_read_more">Read More</string>
+    <string name="tap_on_a_story_thumbnail_to_start_viewing">Tap on a story thumbnail to start viewing</string>
 </resources>

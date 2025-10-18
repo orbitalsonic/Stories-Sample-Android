@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import com.orbitalsonic.storiessample.base.BaseFragment
-import com.orbitalsonic.storiessample.data.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.entities.ItemStory
 import com.orbitalsonic.storiessample.databinding.FragmentStoryBinding
 import com.orbitalsonic.storiessample.presentation.ui.activities.ActivityStories
 import com.orbitalsonic.storiessample.utilities.utils.Constants
@@ -12,6 +12,10 @@ import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import dev.epegasus.storyview.StoryView
 import dev.epegasus.storyview.listeners.OnStoryChangeListener
 import dev.epegasus.storyview.listeners.OnStoryClickListener
+import com.orbitalsonic.storiessample.domain.useCases.UseCaseStorySeen
+import kotlinx.coroutines.launch
+import androidx.lifecycle.lifecycleScope
+import org.koin.android.ext.android.inject
 
 class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::inflate) {
 
@@ -20,6 +24,7 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
     private var isStoriesShowing = false
 
     private val itemStory by lazy { arguments?.getParcelable(ARG_ITEM_STORY, ItemStory::class.java) }
+    private val useCaseStorySeen: UseCaseStorySeen by inject()
 
     override fun onViewCreated() {}
 
@@ -91,6 +96,8 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
                 override fun storyChanged(position: Int) {
                     if (position >= 0 && position < storyData.storyList.size) {
                         this@FragmentStory.currentPosition = position
+                        // Mark story as seen
+                        markStoryAsSeen(position)
                     }
                 }
 
@@ -114,6 +121,17 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
     private fun exitScreen() {
         activity?.finish()
         activity?.overridePendingTransition(0, 0)
+    }
+    
+    private fun markStoryAsSeen(storyPosition: Int) {
+        val storyData = itemStory ?: return
+        if (storyPosition >= 0 && storyPosition < storyData.storyList.size) {
+            // Mark individual story as seen
+            val storyId = storyData.id * 1000 + storyPosition // Create unique ID
+            viewLifecycleOwner.lifecycleScope.launch {
+                useCaseStorySeen.markStoryAsSeen(storyId, storyData.id)
+            }
+        }
     }
 
     companion object {

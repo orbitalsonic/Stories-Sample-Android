@@ -5,7 +5,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.google.gson.Gson
-import com.orbitalsonic.storiessample.data.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.entities.ItemStory
 import com.orbitalsonic.storiessample.data.entities.StoriesResponse
 import com.orbitalsonic.storiessample.data.entities.StoryCategory
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG

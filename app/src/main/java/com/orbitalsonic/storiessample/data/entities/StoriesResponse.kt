@@ -1,5 +1,7 @@
 package com.orbitalsonic.storiessample.data.entities
 
+import com.orbitalsonic.storiessample.data.dataSources.entities.ItemStory
+
 data class StoriesResponse(
     val categories: List<ItemStory>
 )

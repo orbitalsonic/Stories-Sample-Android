@@ -1,4 +1,4 @@
-package com.orbitalsonic.storiessample.data.entities
+package com.orbitalsonic.storiessample.data.dataSources.entities
 
 import android.os.Parcelable
 import dev.epegasus.storyview.dataClasses.MyStory
