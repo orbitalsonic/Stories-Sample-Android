@@ -19,8 +19,7 @@ import dev.epegasus.storyview.listeners.ProgressListener
 
 class PausableProgressBar(context: Context) : FrameLayout(context) {
 
-    private val defaultProgressDuration = 2000
-    private var duration = defaultProgressDuration.toLong()
+    private var progressDuration = 2000.toLong()
 
     private val binding: PausableProgressBinding
     private var animation: PausableScaleAnimation? = null
@@ -32,7 +31,7 @@ class PausableProgressBar(context: Context) : FrameLayout(context) {
     }
 
     fun setDuration(duration: Long) {
-        this.duration = duration
+        this.progressDuration = duration
     }
 
     fun setCallback(progressListener: ProgressListener) {
@@ -78,7 +77,7 @@ class PausableProgressBar(context: Context) : FrameLayout(context) {
     fun startProgress() {
         binding.maxProgress.visibility = GONE
         animation = PausableScaleAnimation(0f, 1f, 1f, 1f, Animation.ABSOLUTE, 0f, Animation.RELATIVE_TO_SELF, 0f)
-        animation?.duration = duration
+        animation?.duration = progressDuration
         animation?.interpolator = LinearInterpolator()
         animation?.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(animation: Animation) {}
