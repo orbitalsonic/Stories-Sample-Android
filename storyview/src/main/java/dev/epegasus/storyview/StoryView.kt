@@ -421,7 +421,7 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
 
         pauseJob?.cancel()
         pauseJob = viewLifecycleOwner.lifecycleScope.launch {
-            delay(30) // <- threshold for "long press" in ms
+            delay(35) // <- threshold for "long press" in ms
             binding.storiesProgressView.pause()
             didPause = true
             // optionally: setHeadingVisibility(View.GONE)
