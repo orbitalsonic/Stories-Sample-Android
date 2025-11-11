@@ -1,7 +1,7 @@
 package com.orbitalsonic.storiessample.presentation.ui.activities
 
 import com.orbitalsonic.storiessample.base.BaseActivity
-import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStoryCategoryLib
 import com.orbitalsonic.storiessample.databinding.ActivityStoriesBinding
 import com.orbitalsonic.storiessample.presentation.adapters.PagerStories
 import com.orbitalsonic.storiessample.presentation.viewModels.ViewModelStories
@@ -23,7 +23,7 @@ class ActivityStories : BaseActivity<ActivityStoriesBinding>(ActivityStoriesBind
         storySwipedLiveData.observe(this) { onSwipeViewPager(it) }
     }
 
-    private fun initViewPager(stories: List<ItemStory>) {
+    private fun initViewPager(stories: List<ItemStoryCategoryLib>) {
         if (stories.isEmpty()) {
             finish()
             return

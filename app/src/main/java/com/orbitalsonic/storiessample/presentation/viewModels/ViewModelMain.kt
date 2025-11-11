@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStoryCategoryLib
 import com.orbitalsonic.storiessample.domain.useCases.UseCaseStories
 import com.orbitalsonic.storiessample.domain.useCases.UseCaseStorySeen
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 
 class ViewModelMain(private val useCaseStories: UseCaseStories, private val useCaseStorySeen: UseCaseStorySeen) : ViewModel() {
 
-    private val _storiesLiveData = MutableLiveData<List<ItemStory>>()
-    val storiesLiveData: LiveData<List<ItemStory>> = _storiesLiveData
+    private val _storiesLiveData = MutableLiveData<List<ItemStoryCategoryLib>>()
+    val storiesLiveData: LiveData<List<ItemStoryCategoryLib>> = _storiesLiveData
 
     private val _seenStatusLiveData = MutableLiveData<Map<Int, Boolean>>()
     val seenStatusLiveData: LiveData<Map<Int, Boolean>> = _seenStatusLiveData
@@ -71,14 +71,14 @@ class ViewModelMain(private val useCaseStories: UseCaseStories, private val useC
     /**
      * Handle story item click
      */
-    fun onItemClick(itemStory: ItemStory) {
+    fun onItemClick(itemStoryCategoryLib: ItemStoryCategoryLib) {
         // Find the index in the current sorted list (same as MainActivity display order)
         val currentStories = _storiesLiveData.value ?: emptyList()
-        val sortedIndex = currentStories.indexOfFirst { it.id == itemStory.id }
+        val sortedIndex = currentStories.indexOfFirst { it.id == itemStoryCategoryLib.id }
         val finalIndex = if (sortedIndex >= 0) sortedIndex else 0
         
         _navigateLiveData.value = finalIndex
-        Log.d(TAG, "ViewModelMain: onItemClick: Navigating to story ${itemStory.headerText} at sorted index $finalIndex")
+        Log.d(TAG, "ViewModelMain: onItemClick: Navigating to story ${itemStoryCategoryLib.headerText} at sorted index $finalIndex")
     }
 
     /**

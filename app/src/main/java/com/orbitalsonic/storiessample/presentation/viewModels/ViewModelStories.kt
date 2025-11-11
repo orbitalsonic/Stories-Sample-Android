@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStoryCategoryLib
 import com.orbitalsonic.storiessample.domain.useCases.UseCaseStories
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import kotlinx.coroutines.launch
@@ -16,8 +16,8 @@ import kotlinx.coroutines.launch
  */
 class ViewModelStories(private val useCase: UseCaseStories) : ViewModel() {
 
-    private val _listLiveData = MutableLiveData<List<ItemStory>>()
-    val listLiveData: LiveData<List<ItemStory>> = _listLiveData
+    private val _listLiveData = MutableLiveData<List<ItemStoryCategoryLib>>()
+    val listLiveData: LiveData<List<ItemStoryCategoryLib>> = _listLiveData
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading

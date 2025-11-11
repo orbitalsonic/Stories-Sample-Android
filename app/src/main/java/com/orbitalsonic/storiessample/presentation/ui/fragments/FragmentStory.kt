@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.orbitalsonic.storiessample.base.BaseFragment
-import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStoryCategoryLib
 import com.orbitalsonic.storiessample.databinding.FragmentStoryBinding
 import com.orbitalsonic.storiessample.domain.useCases.UseCaseStorySeen
 import com.orbitalsonic.storiessample.presentation.ui.activities.ActivityStories
@@ -31,9 +31,9 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
     private var currentPosition = 0
     private var isStoriesShowing = false
 
-    private val itemStory by lazy {
+    private val itemStoryCategoryLib by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(ARG_ITEM_STORY, ItemStory::class.java)
+            arguments?.getParcelable(ARG_ITEM_STORY, ItemStoryCategoryLib::class.java)
         } else {
             arguments?.getParcelable(ARG_ITEM_STORY)
         }
@@ -62,7 +62,7 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
      * Restart stories from the beginning when category changes
      */
     fun restartStories() {
-        Log.d(TAG, "Restarting stories for: ${itemStory?.headerText}")
+        Log.d(TAG, "Restarting stories for: ${itemStoryCategoryLib?.headerText}")
         currentPosition = 0 // Reset to first story
 
         // Always dismiss current stories and show fresh ones
@@ -73,7 +73,7 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
     }
 
     private fun showStories() {
-        val storyData = itemStory ?: return
+        val storyData = itemStoryCategoryLib ?: return
 
         // Prevent duplicate story showing
         if (isStoriesShowing) {
@@ -143,7 +143,7 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
     }
 
     private fun markStoryAsSeen(storyPosition: Int) {
-        val storyData = itemStory ?: return
+        val storyData = itemStoryCategoryLib ?: return
         if (storyPosition >= 0 && storyPosition < storyData.storyList.size) {
             // Mark individual story as seen
             val storyId = storyData.id * 1000 + storyPosition // Create unique ID
@@ -188,7 +188,7 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
      * Handle download button click
      */
     private fun handleDownloadClick(imageUrl: String) {
-        val storyData = itemStory ?: return
+        val storyData = itemStoryCategoryLib ?: return
         Log.d(TAG, "FragmentStory: handleDownloadClick: Downloading image from: $imageUrl")
 
         // Start download
@@ -208,7 +208,7 @@ class FragmentStory : BaseFragment<FragmentStoryBinding>(FragmentStoryBinding::i
     companion object {
         private const val ARG_ITEM_STORY = "arg_item_story"
 
-        fun newInstance(story: ItemStory): Fragment {
+        fun newInstance(story: ItemStoryCategoryLib): Fragment {
             return FragmentStory().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_ITEM_STORY, story)

@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.orbitalsonic.storiessample.R
-import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStoryCategoryLib
 import com.orbitalsonic.storiessample.databinding.ItemStoryThumbnailBinding
 
-class AdapterStoryThumbnails(private val onItemClick: (ItemStory) -> Unit) : ListAdapter<ItemStory, AdapterStoryThumbnails.CustomViewHolder>(StoryDiffCallback) {
+class AdapterStoryThumbnails(private val onItemClick: (ItemStoryCategoryLib) -> Unit) : ListAdapter<ItemStoryCategoryLib, AdapterStoryThumbnails.CustomViewHolder>(StoryDiffCallback) {
 
     private var seenStatusMap = mapOf<Int, Boolean>()
 
@@ -38,7 +38,7 @@ class AdapterStoryThumbnails(private val onItemClick: (ItemStory) -> Unit) : Lis
 
     inner class CustomViewHolder(val binding: ItemStoryThumbnailBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(story: ItemStory, isSeen: Boolean, onItemClick: (ItemStory) -> Unit) {
+        fun bind(story: ItemStoryCategoryLib, isSeen: Boolean, onItemClick: (ItemStoryCategoryLib) -> Unit) {
             with(binding) {
                 Glide.with(root.context).load(story.headerUrl).into(ifvThumbnail)
 
@@ -55,12 +55,12 @@ class AdapterStoryThumbnails(private val onItemClick: (ItemStory) -> Unit) : Lis
     }
 
     companion object {
-        object StoryDiffCallback : DiffUtil.ItemCallback<ItemStory>() {
-            override fun areItemsTheSame(oldItem: ItemStory, newItem: ItemStory): Boolean {
+        object StoryDiffCallback : DiffUtil.ItemCallback<ItemStoryCategoryLib>() {
+            override fun areItemsTheSame(oldItem: ItemStoryCategoryLib, newItem: ItemStoryCategoryLib): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: ItemStory, newItem: ItemStory): Boolean {
+            override fun areContentsTheSame(oldItem: ItemStoryCategoryLib, newItem: ItemStoryCategoryLib): Boolean {
                 return oldItem == newItem
             }
         }

@@ -5,9 +5,9 @@ import com.google.firebase.Firebase
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.google.gson.Gson
-import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStoryCategoryLib
 import com.orbitalsonic.storiessample.data.dataSources.remote.entities.StoriesResponse
-import com.orbitalsonic.storiessample.data.dataSources.remote.entities.StoryCategory
+import com.orbitalsonic.storiessample.data.dataSources.remote.entities.ItemStoryCategory
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import dev.epegasus.storyview.dataClasses.MyStory
 import kotlinx.coroutines.tasks.await
@@ -54,9 +54,9 @@ class DataSourceRemoteStories {
             }
             
             // Parse the remote JSON (should be in the same format as assets)
-            val storyCategories = Gson().fromJson(json, Array<StoryCategory>::class.java)
+            val storyCategories = Gson().fromJson(json, Array<ItemStoryCategory>::class.java)
             val itemStories = storyCategories.mapIndexed { index, category ->
-                ItemStory(
+                ItemStoryCategoryLib(
                     id = index,
                     headerText = category.category,
                     subHeaderText = category.subHeader,

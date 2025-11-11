@@ -3,9 +3,9 @@ package com.orbitalsonic.storiessample.data.dataSources.local
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
-import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStory
+import com.orbitalsonic.storiessample.data.dataSources.local.entities.ItemStoryCategoryLib
 import com.orbitalsonic.storiessample.data.dataSources.remote.entities.StoriesResponse
-import com.orbitalsonic.storiessample.data.dataSources.remote.entities.StoryCategory
+import com.orbitalsonic.storiessample.data.dataSources.remote.entities.ItemStoryCategory
 import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 import dev.epegasus.storyview.dataClasses.MyStory
 import java.io.File
@@ -40,9 +40,9 @@ class DataSourceLocalStories(private val context: Context) {
         return try {
             context.assets.open("stories.json").use { inputStream ->
                 InputStreamReader(inputStream).use { reader ->
-                    val storyCategories = Gson().fromJson(reader, Array<StoryCategory>::class.java)
+                    val storyCategories = Gson().fromJson(reader, Array<ItemStoryCategory>::class.java)
                     val itemStories = storyCategories.mapIndexed { index, category ->
-                        ItemStory(
+                        ItemStoryCategoryLib(
                             id = index,
                             headerText = category.category,
                             subHeaderText = category.subHeader,
@@ -73,7 +73,7 @@ class DataSourceLocalStories(private val context: Context) {
         }
     }
 
-    fun getStories(): List<ItemStory> {
+    fun getStories(): List<ItemStoryCategoryLib> {
         Log.d(TAG, "DataSourceLocalStories: getCategoryList: called")
         return storiesResponse.categories
     }

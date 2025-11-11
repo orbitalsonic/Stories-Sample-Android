@@ -1,8 +1,8 @@
 package com.orbitalsonic.storiessample.data.dataSources.remote.entities
 
-data class StoryCategory(
+data class ItemStoryCategory(
     val category: String,
     val subHeader: String,
     val imageUrl: String,
-    val stories: List<StoryItem>
+    val stories: List<ItemStory>
 )

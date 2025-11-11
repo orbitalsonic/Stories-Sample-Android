@@ -5,7 +5,7 @@ import dev.epegasus.storyview.dataClasses.MyStory
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ItemStory(
+data class ItemStoryCategoryLib(
     val id: Int,
     val headerText: String,
     val subHeaderText: String,
