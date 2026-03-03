@@ -11,12 +11,6 @@ import dev.epegasus.storyview.R
 import dev.epegasus.storyview.databinding.PausableProgressBinding
 import dev.epegasus.storyview.listeners.ProgressListener
 
-/**
- * Created by Sohaib Ahmed on 02/04/2023.
- * github -> https://github.com/epegasus
- * linked-in -> https://www.linkedin.com/in/epegasus
- */
-
 class PausableProgressBar(context: Context) : FrameLayout(context) {
 
     private var progressDuration = 2000.toLong()

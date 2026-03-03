@@ -3,12 +3,6 @@ package dev.epegasus.storyview.utils
 import java.util.*
 import kotlin.math.abs
 
-/**
- * Created by Sohaib Ahmed on 03/04/2023.
- * github -> https://github.com/epegasus
- * linked-in -> https://www.linkedin.com/in/epegasus
- */
-
 object DateUtils {
 
     fun getDurationBetweenDates(d1: Date, d2: Date): String {

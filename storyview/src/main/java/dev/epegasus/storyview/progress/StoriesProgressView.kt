@@ -9,12 +9,6 @@ import dev.epegasus.storyview.listeners.ProgressListener
 import dev.epegasus.storyview.listeners.StoriesListener
 import androidx.core.content.withStyledAttributes
 
-/**
- * Created by Sohaib Ahmed on 02/04/2023.
- * github -> https://github.com/epegasus
- * linked-in -> https://www.linkedin.com/in/epegasus
- */
-
 open class StoriesProgressView : LinearLayout {
 
     private val progressBarLayoutParams = LayoutParams(50, LayoutParams.WRAP_CONTENT, 1f)

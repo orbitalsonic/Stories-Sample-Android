@@ -14,12 +14,6 @@ import dev.epegasus.storyview.listeners.OnTouchCallback
 import dev.epegasus.storyview.listeners.pull_dismiss_listener.OnPullDismissListener
 import kotlin.math.abs
 
-/**
- * Created by Sohaib Ahmed on 02/04/2023.
- * github -> https://github.com/epegasus
- * linked-in -> https://www.linkedin.com/in/epegasus
- */
-
 class PullDismissLayout2 : FrameLayout {
 
     private var onPullDismissListener: OnPullDismissListener? = null

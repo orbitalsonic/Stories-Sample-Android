@@ -30,12 +30,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-/**
- * Created by Sohaib Ahmed on 02/04/2023.
- * github -> https://github.com/epegasus
- * linked-in -> https://www.linkedin.com/in/epegasus
- */
-
 class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListener, OnTouchCallback {
 
     private var _binding: DialogStoriesBinding? = null
@@ -108,17 +102,23 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
     @Suppress("DEPRECATION")
     private fun readArguments() {
         arguments?.let { bundle ->
-            val temp: ArrayList<MyStory>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                bundle.getParcelableArrayList(IMAGES_KEY, MyStory::class.java)
-            else
-                bundle.getParcelableArrayList(IMAGES_KEY)
-            temp?.let { it -> _storyList.addAll(it) }
+            // 🔥 CRITICAL FIX
+            bundle.classLoader = MyStory::class.java.classLoader
+
+            val temp: ArrayList<MyStory>? =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                    bundle.getParcelableArrayList(IMAGES_KEY, MyStory::class.java)
+                else
+                    bundle.getParcelableArrayList(IMAGES_KEY)
+
+            temp?.let { _storyList.addAll(it) }
 
             startingIndex = bundle.getInt(STARTING_INDEX_TAG, 0)
             duration = bundle.getLong(DURATION_KEY, 2000)
             isRtl = bundle.getBoolean(IS_RTL_TAG, false)
         }
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupViews() {
@@ -264,29 +264,39 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
     }
 
     private fun previousStory() {
-        if (counter <= 0) {
-            // Already at first story
-            if (binding.storiesProgressView.isPaused()) {
-                binding.storiesProgressView.resume()
+        try {
+            if (counter <= 0) {
+                // Already at first story
+                if (binding.storiesProgressView.isPaused()) {
+                    binding.storiesProgressView.resume()
+                }
+                return
             }
-            return
+
+            binding.viewPager.setCurrentItem(--counter, false)
+            binding.storiesProgressView.setStoriesCount(storyList.size)
+            binding.storiesProgressView.setStoryDuration(duration)
+            binding.storiesProgressView.startStories(counter)
+            updateHeading()
+        }catch (ex: Exception){
+            ex.printStackTrace()
         }
 
-        binding.viewPager.setCurrentItem(--counter, false)
-        binding.storiesProgressView.setStoriesCount(storyList.size)
-        binding.storiesProgressView.setStoryDuration(duration)
-        binding.storiesProgressView.startStories(counter)
-        updateHeading()
     }
 
     override fun nextStory() {
-        if (counter + 1 >= storyList.size) {
-            onDismissed()
-            return
+        try {
+            if (counter + 1 >= storyList.size) {
+                onDismissed()
+                return
+            }
+            binding.viewPager.setCurrentItem(++counter, false)
+            binding.storiesProgressView.startStories(counter)
+            updateHeading()
+        }catch (ex: Exception){
+            ex.printStackTrace()
         }
-        binding.viewPager.setCurrentItem(++counter, false)
-        binding.storiesProgressView.startStories(counter)
-        updateHeading()
+
     }
 
     override fun onDescriptionClickListener(position: Int) {
@@ -309,11 +319,15 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
     @Suppress("DEPRECATION")
     private fun updateHeading() {
         if (_binding == null) return
-        
-        val temp: ArrayList<HeaderInfo>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            arguments?.getParcelableArrayList(HEADER_INFO_KEY, HeaderInfo::class.java)
-        else
-            arguments?.getParcelableArrayList(HEADER_INFO_KEY)
+
+        // 🔥 CRITICAL FIX
+        arguments?.classLoader = HeaderInfo::class.java.classLoader
+
+        val temp: ArrayList<HeaderInfo>? =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                arguments?.getParcelableArrayList(HEADER_INFO_KEY, HeaderInfo::class.java)
+            else
+                arguments?.getParcelableArrayList(HEADER_INFO_KEY)
 
         var headerInfo: HeaderInfo? = null
 
@@ -379,8 +393,14 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
     /* -------------------------- Pull Dismiss Listener -------------------------- */
 
     override fun onDismissed() {
-        parentFragmentManager.popBackStack()
-        onStoryChangeListener?.storyDismiss()
+        try {
+            if (isAdded && parentFragmentManager.isStateSaved.not()){
+                parentFragmentManager.popBackStack()
+            }
+            onStoryChangeListener?.storyDismiss()
+        }catch (ex: Exception){
+            ex.printStackTrace()
+        }
     }
 
     override fun onShouldInterceptTouchEvent(): Boolean {
@@ -554,7 +574,9 @@ class StoryView : Fragment(), StoriesListener, StoryCallback, OnPullDismissListe
         }
 
         fun dismiss() {
-            fragmentManager.popBackStack()
+            if (fragmentManager.isStateSaved.not()){
+                fragmentManager.popBackStack()
+            }
         }
         
         fun restartStories() {

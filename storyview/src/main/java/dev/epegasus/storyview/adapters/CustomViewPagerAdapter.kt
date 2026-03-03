@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -13,16 +14,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import dev.epegasus.storyview.dataClasses.MyStory
 import dev.epegasus.storyview.databinding.ItemStoryBinding
 import dev.epegasus.storyview.listeners.StoryCallback
 import dev.epegasus.storyview.utils.PaletteExtraction
-
-/**
- * Created by Sohaib Ahmed on 04/04/2023.
- * github -> https://github.com/epegasus
- * linked-in -> https://www.linkedin.com/in/epegasus
- */
 
 class CustomViewPagerAdapter(
     private val imageList: List<MyStory>,
@@ -66,13 +62,13 @@ class CustomViewPagerAdapter(
             // Prevent touch events from bubbling up to story view
             itemBinding.ifvDownload.setOnTouchListener { view, event ->
                 when (event.action) {
-                    android.view.MotionEvent.ACTION_DOWN -> {
+                    MotionEvent.ACTION_DOWN -> {
                         Log.d("CustomViewPagerAdapter", "Download button touch DOWN")
                         itemClick.setDownloadButtonTouched(true)
                         true
                     }
 
-                    android.view.MotionEvent.ACTION_UP -> {
+                    MotionEvent.ACTION_UP -> {
                         Log.d("CustomViewPagerAdapter", "Download button touch UP")
                         view.performClick()
                         // Reset the flag after a short delay
@@ -82,7 +78,7 @@ class CustomViewPagerAdapter(
                         true
                     }
 
-                    android.view.MotionEvent.ACTION_CANCEL -> {
+                    MotionEvent.ACTION_CANCEL -> {
                         Log.d("CustomViewPagerAdapter", "Download button touch CANCELLED")
                         itemClick.setDownloadButtonTouched(false)
                         true
@@ -96,12 +92,18 @@ class CustomViewPagerAdapter(
             Glide.with(itemBinding.root.context)
                 .load(item.url)
                 .listener(object : RequestListener<Drawable?> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<Drawable?>?, isFirstResource: Boolean): Boolean {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>, isFirstResource: Boolean): Boolean {
                         itemClick.nextStory()
                         return false
                     }
 
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: com.bumptech.glide.request.target.Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable?>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
                         if (resource != null) {
                             val paletteExtraction = PaletteExtraction(itemBinding.root, (resource as BitmapDrawable).bitmap)
                             paletteExtraction.execute()

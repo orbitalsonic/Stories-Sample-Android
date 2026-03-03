@@ -1,11 +1,5 @@
 package dev.epegasus.storyview.listeners.pull_dismiss_listener
 
-/**
- * Created by Sohaib Ahmed on 02/04/2023.
- * github -> https://github.com/epegasus
- * linked-in -> https://www.linkedin.com/in/epegasus
- */
-
 interface OnPullDismissListener {
 
     /**

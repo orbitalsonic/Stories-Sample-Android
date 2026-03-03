@@ -10,12 +10,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 
-/**
- * Created by Sohaib Ahmed on 03/04/2023.
- * github -> https://github.com/epegasus
- * linked-in -> https://www.linkedin.com/in/epegasus
- */
-
 class PaletteExtraction(view: View, resource: Bitmap?) {
 
     private val wrView: WeakReference<View> = WeakReference(view)

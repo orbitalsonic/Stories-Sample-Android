@@ -5,12 +5,6 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import kotlin.math.ceil
 
-/**
- * Created by Sohaib Ahmed on 03/04/2023.
- * github -> https://github.com/epegasus
- * linked-in -> https://www.linkedin.com/in/epegasus
- */
-
 class DynamicImageView(context: Context, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
