@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StoriesSample">
         <activity
-            android:name=".presentation.ui.activities.ActivityStories"
+            android:name=".presentation.ui.activities.StoryActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.ui.activities.MainActivity"

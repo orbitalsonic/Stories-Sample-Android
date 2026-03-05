@@ -1,101 +1,164 @@
-[
-  {
-    "category": "Makkah",
-    "subHeader": "Home of Allah",
-    "imageUrl": "https://picsum.photos/id/1/300/200",
-    "stories": [
-      { "imageUrl": "https://picsum.photos/id/1/300/200" },
-      { "imageUrl": "https://picsum.photos/id/2/300/200" },
-      { "imageUrl": "https://picsum.photos/id/3/300/200" },
-      { "imageUrl": "https://picsum.photos/id/4/300/200" }
-    ]
-  },
-  {
-    "category": "Madina",
-    "subHeader": "Home of our beloved Prophet (P.B.U.H)",
-    "imageUrl": "https://picsum.photos/id/5/300/200",
-    "stories": [
-      { "imageUrl": "https://picsum.photos/id/5/300/200" },
-      { "imageUrl": "https://picsum.photos/id/6/300/200" },
-      { "imageUrl": "https://picsum.photos/id/7/300/200" },
-      { "imageUrl": "https://picsum.photos/id/8/300/200" }
-    ]
-  },
-  {
-    "category": "Masjid Al Aqsa",
-    "subHeader": "Temporary Qibla",
-    "imageUrl": "https://picsum.photos/id/9/300/200",
-    "stories": [
-      { "imageUrl": "https://picsum.photos/id/9/300/200" },
-      { "imageUrl": "https://picsum.photos/id/10/300/200" },
-      { "imageUrl": "https://picsum.photos/id/11/300/200" },
-      { "imageUrl": "https://picsum.photos/id/12/300/200" }
-    ]
-  },
-  {
-    "category": "Istanbul",
-    "subHeader": "City of Two Continents",
-    "imageUrl": "https://picsum.photos/id/13/300/200",
-    "stories": [
-      { "imageUrl": "https://picsum.photos/id/13/300/200" },
-      { "imageUrl": "https://picsum.photos/id/14/300/200" },
-      { "imageUrl": "https://picsum.photos/id/15/300/200" },
-      { "imageUrl": "https://picsum.photos/id/16/300/200" }
-    ]
-  },
-  {
-    "category": "Dubai",
-    "subHeader": "City of Gold",
-    "imageUrl": "https://picsum.photos/id/17/300/200",
-    "stories": [
-      { "imageUrl": "https://picsum.photos/id/17/300/200" },
-      { "imageUrl": "https://picsum.photos/id/18/300/200" },
-      { "imageUrl": "https://picsum.photos/id/19/300/200" },
-      { "imageUrl": "https://picsum.photos/id/20/300/200" }
-    ]
-  },
-  {
-    "category": "Cairo",
-    "subHeader": "City of a Thousand Minarets",
-    "imageUrl": "https://picsum.photos/id/21/300/200",
-    "stories": [
-      { "imageUrl": "https://picsum.photos/id/21/300/200" },
-      { "imageUrl": "https://picsum.photos/id/22/300/200" },
-      { "imageUrl": "https://picsum.photos/id/23/300/200" },
-      { "imageUrl": "https://picsum.photos/id/24/300/200" }
-    ]
-  },
-  {
-    "category": "Marrakech",
-    "subHeader": "Red City of Morocco",
-    "imageUrl": "https://picsum.photos/id/25/300/200",
-    "stories": [
-      { "imageUrl": "https://picsum.photos/id/25/300/200" },
-      { "imageUrl": "https://picsum.photos/id/26/300/200" },
-      { "imageUrl": "https://picsum.photos/id/27/300/200" },
-      { "imageUrl": "https://picsum.photos/id/28/300/200" }
-    ]
-  },
-  {
-    "category": "Kuala Lumpur",
-    "subHeader": "Garden City of Lights",
-    "imageUrl": "https://picsum.photos/id/29/300/200",
-    "stories": [
-      { "imageUrl": "https://picsum.photos/id/29/300/200" },
-      { "imageUrl": "https://picsum.photos/id/30/300/200" },
-      { "imageUrl": "https://picsum.photos/id/31/300/200" },
-      { "imageUrl": "https://picsum.photos/id/32/300/200" }
-    ]
-  },
-  {
-    "category": "Lahore",
-    "subHeader": "Heart of Pakistan",
-    "imageUrl": "https://picsum.photos/id/33/300/200",
-    "stories": [
-      { "imageUrl": "https://picsum.photos/id/33/300/200" },
-      { "imageUrl": "https://picsum.photos/id/34/300/200" },
-      { "imageUrl": "https://picsum.photos/id/35/300/200" },
-      { "imageUrl": "https://picsum.photos/id/36/300/200" }
-    ]
-  }
-]
+{
+  "categories": [
+    {
+      "id": 1,
+      "title": "Makkah",
+      "subtitle": "The Holy Sanctuary",
+      "thumbnail": "https://cdn.tazkia-audio-files.org/thumbnails/Stories/Makkah-001.webp",
+      "stories": [
+        {
+          "imageUrl": "https://i.pinimg.com/1200x/e6/00/37/e60037b55c32c52f8d33500d48178462.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/7e/f4/c6/7ef4c691de181e214aa6598da8753402.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/1200x/fc/07/54/fc075469bf2574100c29048b1d222a4a.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/4e/24/a0/4e24a07986e0e83a86ce22a03aef936a.jpg"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Madina",
+      "subtitle": "City of Light",
+      "thumbnail": "https://cdn.tazkia-audio-files.org/thumbnails/Stories/Madina-001.webp",
+      "stories": [
+        {
+          "imageUrl": "https://i.pinimg.com/736x/97/78/c3/9778c3f6d72e90f0c57e2d571c8148cc.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/f8/15/32/f81532dac8185910bf6079b1c5b3213c.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/1200x/d9/17/2d/d9172d42d2b0823576c792242780cf3d.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/4e/30/cc/4e30cc246a0baf3975eba4edbbe6ad8e.jpg"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Al Aqsa",
+      "subtitle": "Heart of Palestine",
+      "thumbnail": "https://cdn.tazkia-audio-files.org/thumbnails/Stories/Al-Aqsa-001.webp",
+      "stories": [
+        {
+          "imageUrl": "https://i.pinimg.com/736x/11/b4/f2/11b4f2434b6a8dab9ec14779d1637a74.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/89/f2/a1/89f2a1ff7f81587dd59b7a641cd5fc53.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/1200x/9a/ef/1b/9aef1bdb9f6cd1b8a2e53bdda8897c5f.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/73/47/a0/7347a0c75b2d6345de0fd04ec23b6ca4.jpg"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Dua",
+      "subtitle": "Connection with Allah",
+      "thumbnail": "https://cdn.tazkia-audio-files.org/thumbnails/Stories/Dua-001.webp",
+      "stories": [
+        {
+          "imageUrl": "https://i.pinimg.com/1200x/ae/27/af/ae27afa0bffc87cc21b2100a1239d618.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/0b/ba/e5/0bbae59f8635a713111df75a1ed88c00.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/1200x/c7/e4/30/c7e430a3bc203f675df5e84fb3cf95ed.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/1200x/d3/55/2c/d3552c2e2fc3e3698a472e816ee71ffe.jpg"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Lifestyle",
+      "subtitle": "Faithful Living",
+      "thumbnail": "https://cdn.tazkia-audio-files.org/thumbnails/Stories/Lifestyle-001.webp",
+      "stories": [
+        {
+          "imageUrl": "https://i.pinimg.com/736x/6e/25/03/6e2503a25f8c79ef1b26bbf107abcb6b.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/98/01/ca/9801ca752abd6796e0c9ca0b7033b173.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/ef/8a/ce/ef8acee3306b4b2628a29bdf91476f7d.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/04/1f/6e/041f6e5a96be787d8565fc6407265d29.jpg"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Dhikr",
+      "subtitle": "Echoes of the Heart",
+      "thumbnail": "https://cdn.tazkia-audio-files.org/thumbnails/Stories/Dhikr-001.webp",
+      "stories": [
+        {
+          "imageUrl": "https://i.pinimg.com/736x/1c/e2/d5/1ce2d571a33b8ee6a63bc53b2adbbabd.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/da/5e/ab/da5eab0e726ebb92152cf2879c1794ed.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/ff/13/b6/ff13b680e06d854d87310e764eadb16d.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/88/26/1e/88261e4c6916a6bfe30548f13da89345.jpg"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Caligraphy",
+      "subtitle": "Beauty in Every Stroke",
+      "thumbnail": "https://cdn.tazkia-audio-files.org/thumbnails/Stories/Calligraphy-001.webp",
+      "stories": [
+        {
+          "imageUrl": "https://i.pinimg.com/736x/ae/94/0a/ae940aac8ad36ecabd7b7f0263e44629.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/ae/0d/c8/ae0dc88f355d47c283b5649994d3c72e.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/58/e0/b0/58e0b0d0f8bd6b767783275a6c5ba842.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/7f/5b/89/7f5b89832d0bb2a065656ca6e0e35eac.jpg"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Architecture",
+      "subtitle": "Timeless Beauty",
+      "thumbnail": "https://cdn.tazkia-audio-files.org/thumbnails/Stories/Architecture-001.webp",
+      "stories": [
+        {
+          "imageUrl": "https://i.pinimg.com/736x/e9/f1/46/e9f1465f8ccecf74eeb9c1ec4a6908e2.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/e4/80/a0/e480a047879bfe12de27dd0016e63984.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/736x/99/c4/49/99c449d4dd77bb14ff6c64252592f92b.jpg"
+        },
+        {
+          "imageUrl": "https://i.pinimg.com/1200x/eb/4e/35/eb4e35ad369b7aa7c2bb8f56afaf58e7.jpg"
+        }
+      ]
+    }
+  ]
+}

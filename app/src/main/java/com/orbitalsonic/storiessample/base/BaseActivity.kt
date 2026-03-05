@@ -1,7 +1,6 @@
 package com.orbitalsonic.storiessample.base
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -11,9 +10,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.updatePadding
 import androidx.viewbinding.ViewBinding
-import com.orbitalsonic.storiessample.utilities.utils.Constants.TAG
 
-abstract class BaseActivity<T : ViewBinding>(private val bindingFactory: (LayoutInflater) -> T) : AppCompatActivity() {
+abstract class BaseActivity<T : ViewBinding>(private val bindingFactory: (LayoutInflater) -> T) :
+    AppCompatActivity() {
 
     protected val binding by lazy { bindingFactory(layoutInflater) }
     protected var includeTopPadding = true
@@ -43,7 +42,8 @@ abstract class BaseActivity<T : ViewBinding>(private val bindingFactory: (Layout
     }
 
     private fun setPaddingNormal(v: View, insets: WindowInsetsCompat) {
-        val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+        val bars =
+            insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
 
         statusBarHeight = bars.top
 
@@ -66,8 +66,10 @@ abstract class BaseActivity<T : ViewBinding>(private val bindingFactory: (Layout
         statusBarHeight = systemBars.top
 
         // Use the maximum of nav bar or IME for bottom padding
-        val bottomPadding = if (includeBottomPadding) maxOf(systemBars.bottom, imeInsets.bottom) else 0
-        val topPadding = if (includeTopPadding) maxOf(systemBars.top, cutout.top, statusBarHeight) else 0
+        val bottomPadding =
+            if (includeBottomPadding) maxOf(systemBars.bottom, imeInsets.bottom) else 0
+        val topPadding =
+            if (includeTopPadding) maxOf(systemBars.top, cutout.top, statusBarHeight) else 0
 
         v.updatePadding(
             left = systemBars.left,
@@ -76,16 +78,6 @@ abstract class BaseActivity<T : ViewBinding>(private val bindingFactory: (Layout
             bottom = bottomPadding
         )
     }
-
-    /* protected open fun installSplashTheme() {
-         Log.d(TAG, "installSplashTheme: installed")
-         installSplashScreen()
-     }
-
-     protected open fun enableMaterialDynamicTheme() {
-         Log.d(TAG, "enableMaterialDynamicTheme: enabling")
-         DynamicColors.applyToActivityIfAvailable(this)
-     }*/
 
     /**
      * @param type
@@ -96,7 +88,6 @@ abstract class BaseActivity<T : ViewBinding>(private val bindingFactory: (Layout
      */
 
     protected open fun hideStatusBar(type: Int) {
-        Log.d(TAG, "hideStatusBar: Showing/Hiding: Type: $type")
         WindowInsetsControllerCompat(window, window.decorView).apply {
             systemBarsBehavior = when (type) {
                 0 -> WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
