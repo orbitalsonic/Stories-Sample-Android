@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -36,7 +35,8 @@ class CustomViewPagerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemBinding = ItemStoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val itemBinding =
+            ItemStoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(itemBinding)
     }
 
@@ -49,13 +49,16 @@ class CustomViewPagerAdapter(
             if (!item.description.isNullOrEmpty()) {
                 itemBinding.mtvDescription.visibility = View.VISIBLE
                 itemBinding.mtvDescription.text = item.description
-                itemBinding.mtvDescription.setOnClickListener { itemClick.onDescriptionClickListener(position) }
+                itemBinding.mtvDescription.setOnClickListener {
+                    itemClick.onDescriptionClickListener(
+                        position
+                    )
+                }
             }
 
             // Configuring Download Button
             itemBinding.ifvDownload.setOnClickListener {
                 Log.d("CustomViewPagerAdapter", "Download button clicked at position: $position")
-                Toast.makeText(itemBinding.root.context, "Downloading!", Toast.LENGTH_SHORT).show()
                 onDownloadClick?.invoke(position, item.url ?: "")
             }
 
@@ -92,7 +95,12 @@ class CustomViewPagerAdapter(
             Glide.with(itemBinding.root.context)
                 .load(item.url)
                 .listener(object : RequestListener<Drawable?> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>, isFirstResource: Boolean): Boolean {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable?>,
+                        isFirstResource: Boolean
+                    ): Boolean {
                         itemClick.nextStory()
                         return false
                     }
@@ -105,7 +113,10 @@ class CustomViewPagerAdapter(
                         isFirstResource: Boolean
                     ): Boolean {
                         if (resource != null) {
-                            val paletteExtraction = PaletteExtraction(itemBinding.root, (resource as BitmapDrawable).bitmap)
+                            val paletteExtraction = PaletteExtraction(
+                                itemBinding.root,
+                                (resource as BitmapDrawable).bitmap
+                            )
                             paletteExtraction.execute()
                         }
                         if (!storiesStarted) {
@@ -114,7 +125,10 @@ class CustomViewPagerAdapter(
                             if (itemBinding.root.isAttachedToWindow) {
                                 itemClick.startStories()
                             } else {
-                                Log.w("CustomViewPagerAdapter", "View not attached, skipping startStories()")
+                                Log.w(
+                                    "CustomViewPagerAdapter",
+                                    "View not attached, skipping startStories()"
+                                )
                             }
                         }
                         return false
@@ -129,5 +143,6 @@ class CustomViewPagerAdapter(
         return imageList.size
     }
 
-    inner class ViewHolder(val itemBinding: ItemStoryBinding) : RecyclerView.ViewHolder(itemBinding.root)
+    inner class ViewHolder(val itemBinding: ItemStoryBinding) :
+        RecyclerView.ViewHolder(itemBinding.root)
 }
