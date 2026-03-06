@@ -41,7 +41,7 @@ class CategoryAdapter(
         }
 
         Glide.with(holder.itemView)
-            .load(item.thumbnail)
+            .load(item.imageUrl)
             .into(holder.binding.ifvThumbnail)
 
         holder.itemView.setOnClickListener {

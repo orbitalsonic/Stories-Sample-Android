@@ -19,8 +19,8 @@ class StoryLocalDataSource(private val context: Context) {
             Category(
                 id = it.id,
                 title = it.title,
-                subtitle = it.subtitle,
-                thumbnail = it.thumbnail,
+                subTitle = it.subtitle,
+                imageUrl = it.thumbnail,
                 stories = it.stories.map { s -> Story(s.imageUrl) }
             )
         }
