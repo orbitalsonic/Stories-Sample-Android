@@ -10,7 +10,7 @@ import com.orbitalsonic.storiessample.presentation.ui.fragments.FragmentStory
 class PagerStories(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
-    private val stories: List<ItemStoryCategoryLib>
+    val stories: List<ItemStoryCategoryLib>
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun createFragment(position: Int): Fragment {

@@ -101,7 +101,7 @@ class CustomViewPagerAdapter(
                         target: Target<Drawable?>,
                         isFirstResource: Boolean
                     ): Boolean {
-                        itemClick.nextStory()
+//                        itemClick.nextStory()
                         return false
                     }
 

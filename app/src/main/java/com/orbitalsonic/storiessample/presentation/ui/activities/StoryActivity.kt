@@ -1,5 +1,6 @@
 package com.orbitalsonic.storiessample.presentation.ui.activities
 
+import androidx.viewpager2.widget.ViewPager2
 import com.orbitalsonic.storiessample.base.BaseActivity
 import com.orbitalsonic.storiessample.databinding.ActivityStoryBinding
 import com.orbitalsonic.storiessample.presentation.adapters.PagerStories
@@ -24,7 +25,6 @@ class StoryActivity :
     }
 
     override fun onCreated() {
-
         initObserver()
         loadStories()
     }
@@ -64,6 +64,19 @@ class StoryActivity :
 
         binding.viewPager.isUserInputEnabled = false
         binding.viewPager.offscreenPageLimit = 1
+
+        binding.viewPager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
+
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                val adapter = binding.viewPager.adapter as? PagerStories ?: return
+                val category = adapter.stories[position]
+
+                viewModel.markSeen(category.id)
+            }
+        })
     }
 
     private fun onSwipeViewPager(direction: Int) {

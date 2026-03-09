@@ -62,13 +62,22 @@ class StoryRepository(
 
     suspend fun getListFromCategoryTitle(title: String): List<Category> {
 
-        val categories = localDataSource.getAllCategories()
+        val fullCategories = localDataSource.getAllCategories() // full data with stories
+        val orderedCategories = shuffledOnceList ?: fullCategories
 
-        val index = categories.indexOfFirst { it.title == title }
-
+        val index = orderedCategories.indexOfFirst { it.title == title }
         if (index == -1) return emptyList()
 
-        return categories.drop(index)
+        // preserve shuffled/seen order, drop until the requested title
+        val result = orderedCategories.drop(index)
+
+        // merge full data to restore child stories
+        return result.map { lightweight ->
+            val full = fullCategories.find { it.id == lightweight.id }
+            lightweight.copy(
+                stories = full?.stories ?: emptyList()
+            )
+        }
     }
 
     suspend fun markSeen(id: Int) {
